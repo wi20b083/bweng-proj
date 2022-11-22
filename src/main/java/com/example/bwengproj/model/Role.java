@@ -1,6 +1,6 @@
 package com.example.bwengproj.model;
 
-public enum UserRole {
+public enum Role {
     Admin,
-    Default
+    Default;
 }
