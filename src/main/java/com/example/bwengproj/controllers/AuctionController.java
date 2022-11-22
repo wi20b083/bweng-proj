@@ -22,8 +22,6 @@ public class AuctionController {
         return auctionService.saveAuction(auction);
     }
 
-
-
     // Read operation
     @GetMapping("/auctions")
     public Iterable<Auction> fetchAuctionList(){
@@ -43,9 +41,9 @@ public class AuctionController {
         return "Deleted Successfully";
     }
 
-    // get specific auction GET
+    // get auction by id
     @GetMapping("/auctions/{id}")
-    public Auction fetchAuctionByID(@PathVariable long id){
-        return auctionService.fetchAuctionById();
+    public Auction fetchAuctionByID(@PathVariable("id") long auctionId){
+        return auctionService.fetchAuctionById(auctionId);
     }
 }
