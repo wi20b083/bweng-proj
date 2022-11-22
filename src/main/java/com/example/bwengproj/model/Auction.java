@@ -25,9 +25,21 @@ public class Auction {
     private Date deliveryDate;
     private int total;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+    private int getTotal() {
+        int i = 0;
+        if (items != null) {
+            if (items.size() > 0) {
+                for (AuctionItem item : items) {
+                    i += item.getPrice();
+                }
+            }
+        }
+        return i;
+    }
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "auction")
     private Set<AuctionItem> items;
