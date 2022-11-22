@@ -23,12 +23,10 @@ public class AuctionServiceImpl implements AuctionService{
         return (List<Auction>) auctionRepository.findAll();
     }
 
-
-    /*
-    // update operation
+    /* update operation
     @Override
-    public Department updateDepartment(Department department, Long departmentId) {
-        Department depDB = departmentRepository.findById(departmentId).get();
+    public Auction updateAuction(Auction auction, Long auctionId) {
+        Auction aucDB = auctionRepository.findById(auctionId).get();
 
         if (Objects.nonNull(department.getDepartmentName()) && !"".equalsIgnoreCase(department.getDepartmentName())) {
             depDB.setDepartmentName(department.getDepartmentName());
@@ -43,8 +41,8 @@ public class AuctionServiceImpl implements AuctionService{
         }
 
         return departmentRepository.save(depDB);
-    }
-    */
+    }*/
+
     @Override
     public Auction updateAuction(Auction auction, Integer auctionId) {
         Auction auctionDB = auctionRepository.findById(auctionId).get();

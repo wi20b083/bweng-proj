@@ -13,11 +13,11 @@ public interface AuctionService {
     List<Auction> fetchAuctionList();
 
     // update operation
-    Auction updateAuction(Auction auction, Integer auctionId);
+    Auction updateAuction(Auction auction, Long auctionId);
 
 
     // delete operation
-    void deleteAuctionById(Integer auctionId);
+    void deleteAuctionById(Long auctionId);
 
 
 }
