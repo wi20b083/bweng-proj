@@ -1,4 +1,4 @@
 package com.example.bwengproj.services;
 
-public class servide {
+public interface BidService {
 }
