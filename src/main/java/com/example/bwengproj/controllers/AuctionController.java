@@ -5,6 +5,7 @@ import com.example.bwengproj.services.AuctionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class AuctionController {
     */
 
     @PostMapping("/auctions")
-    public Auction saveAuction(@RequestBody Auction auction){
+    public Auction saveAuction(@Valid @RequestBody Auction auction){
 
         //Insert in DB
         return auctionService.saveAuction(auction);
@@ -44,6 +45,13 @@ public class AuctionController {
 
         return departmentService.fetchDepartmentList();
     }
+    */
+    @GetMapping("/auctions")
+    public Iterable<Auction> fetchAuctionList(){
+        return auctionService.fetchAuctionList();
+    }
+
+    /*
 
     // Update operation
     @PutMapping("/departments/{id}")
@@ -54,7 +62,14 @@ public class AuctionController {
 
         return departmentService.updateDepartment(
             department, departmentId);
+    }*/
+    @PutMapping("/auctions/{id}")
+    public Auction updateAuction(@RequestBody Auction auction, @PathVariable("id") int auctionId){
+        return auctionService.updateAuction(auction, auctionId);
     }
+
+
+    /*
 
     // Delete operation
     @DeleteMapping("/departments/{id}")
@@ -67,16 +82,6 @@ public class AuctionController {
         return "Deleted Successfully";
     }*/
 
-    // - get all auctions GET
-    @GetMapping("/auctions")
-    public Iterable<Auction> getAuctions(){
-        List<Auction> auctions = new ArrayList<>();
-
-        //DB abfrage hier
-
-        return auctions;
-    }
-
     // - get specific auction GET
     @GetMapping("/auctions/{id}")
     public Auction getAuctionByID(@PathVariable int id){
@@ -85,14 +90,6 @@ public class AuctionController {
         return auction;
     }
 
-
-
-
-    // - edit/update auction PUT
-    @PutMapping("/auctions/{id}")
-    public void updateAuction(@PathVariable int id){
-
-    }
 
     // - delete auction DELETE
     @DeleteMapping("/auctions/{id}")
