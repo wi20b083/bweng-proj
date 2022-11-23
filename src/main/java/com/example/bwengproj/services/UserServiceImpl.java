@@ -1,12 +1,12 @@
 package com.example.bwengproj.services;
 
 import com.example.bwengproj.model.Auction;
+import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.model.User;
-import com.example.bwengproj.repository.AuctionRepository;
 import com.example.bwengproj.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
+import java.util.Set;
 
 public class UserServiceImpl implements UserService{
     @Autowired
@@ -20,8 +20,8 @@ public class UserServiceImpl implements UserService{
 
     // read operation
     @Override
-    public List<User> fetchUserList(){
-        return (List<User>) userRepository.findAll();
+    public Set<User> fetchUserList() {
+        return (Set<User>) userRepository.findAll();
     }
 
     /* update operation
@@ -57,5 +57,15 @@ public class UserServiceImpl implements UserService{
     @Override
     public void deleteUserById(Long userId) {
         userRepository.deleteById(userId);
+    }
+
+    @Override
+    public Set<Auction> fetchAuctionsByUser(Long userId) {
+        return userRepository.findById(userId).get().getAuctions();
+    }
+
+    @Override
+    public Set<Bid> fetchBidsByUser(Long userId) {
+        return userRepository.findById(userId).get().getBids();
     }
 }

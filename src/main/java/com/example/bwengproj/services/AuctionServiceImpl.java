@@ -20,8 +20,13 @@ public class AuctionServiceImpl implements AuctionService{
 
     // read operation
     @Override
-    public List<Auction> fetchAuctionList(){
+    public List<Auction> fetchAuctionList() {
         return (List<Auction>) auctionRepository.findAll();
+    }
+
+    @Override
+    public Auction fetchAuctionById(Long auctionId) {
+        return auctionRepository.findById(auctionId).get();
     }
 
     // update operation
@@ -53,4 +58,6 @@ public class AuctionServiceImpl implements AuctionService{
     public void deleteAuctionById(Long auctionId) {
         auctionRepository.deleteById(auctionId);
     }
+
+
 }

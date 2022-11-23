@@ -1,9 +1,10 @@
 package com.example.bwengproj.services;
 
 import com.example.bwengproj.model.Auction;
+import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.model.User;
 
-import java.util.List;
+import java.util.Set;
 
 public interface UserService {
 
@@ -11,7 +12,7 @@ public interface UserService {
     User saveUser(User user);
 
     // read operation
-    List<User> fetchUserList();
+    Set<User> fetchUserList();
 
     // update operation
     User updateUser(User user, Long userId);
@@ -19,6 +20,13 @@ public interface UserService {
 
     // delete operation
     void deleteUserById(Long userId);
+
+    //fetch auction list by user id
+    Set<Auction> fetchAuctionsByUser(Long userId);
+
+
+    //fetch bid list by user id
+    Set<Bid> fetchBidsByUser(Long userId);
 
 
 }

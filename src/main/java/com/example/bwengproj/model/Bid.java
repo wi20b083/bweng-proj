@@ -27,4 +27,9 @@ public class Bid {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bid")
     private Set<BidItem> items;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "auction_id")
+    private Auction auction;
+
 }
