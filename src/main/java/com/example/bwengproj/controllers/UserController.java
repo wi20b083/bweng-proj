@@ -1,12 +1,12 @@
 package com.example.bwengproj.controllers;
 
 import com.example.bwengproj.model.Auction;
+import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.model.User;
 import com.example.bwengproj.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Set;
 
 @RestController
 public class UserController {
@@ -51,5 +51,12 @@ public class UserController {
 
     // /users/id/data
     @GetMapping("/users/{id}/auctions")
-    public Set<Auction>
+    public Iterable<Auction> fetchAuctionsByUser(@PathVariable("id") long userId) {
+        return userService.fetchAuctionsByUser(userId);
+    }
+
+    @GetMapping("/users/{id}/bids")
+    public Iterable<Bid> fetchBidsByUser(@PathVariable("id") long userId) {
+        return userService.fetchBidsByUser(userId);
+    }
 }

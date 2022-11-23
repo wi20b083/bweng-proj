@@ -1,8 +1,6 @@
 package com.example.bwengproj.controllers;
 
-import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.model.Bid;
-import com.example.bwengproj.services.AuctionService;
 import com.example.bwengproj.services.BidService;
 import org.springframework.web.bind.annotation.*;
 

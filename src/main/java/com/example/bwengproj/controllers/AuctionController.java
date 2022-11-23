@@ -2,12 +2,9 @@ package com.example.bwengproj.controllers;
 
 import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.services.AuctionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 public class AuctionController {
@@ -18,7 +15,6 @@ public class AuctionController {
     // Save operation
     @PostMapping("/auctions")
     public Auction saveAuction(@Valid @RequestBody Auction auction){
-
         return auctionService.saveAuction(auction);
     }
 

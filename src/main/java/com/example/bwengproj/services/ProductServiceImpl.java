@@ -1,12 +1,8 @@
 package com.example.bwengproj.services;
 
 import com.example.bwengproj.model.Product;
-import com.example.bwengproj.model.User;
 import com.example.bwengproj.repository.ProductRepository;
-import com.example.bwengproj.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 public class ProductServiceImpl implements ProductService{
     @Autowired
@@ -20,8 +16,8 @@ public class ProductServiceImpl implements ProductService{
 
     // read operation
     @Override
-    public List<Product> fetchProductList(){
-        return (List<Product>) productRepository.findAll();
+    public Iterable<Product> fetchProductList() {
+        return productRepository.findAll();
     }
 
     /* update operation

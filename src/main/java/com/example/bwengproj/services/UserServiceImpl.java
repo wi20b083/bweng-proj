@@ -6,8 +6,6 @@ import com.example.bwengproj.model.User;
 import com.example.bwengproj.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Set;
-
 public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepository userRepository;
@@ -20,8 +18,8 @@ public class UserServiceImpl implements UserService{
 
     // read operation
     @Override
-    public Set<User> fetchUserList() {
-        return (Set<User>) userRepository.findAll();
+    public Iterable<User> fetchUserList() {
+        return userRepository.findAll();
     }
 
     /* update operation
@@ -60,12 +58,12 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Set<Auction> fetchAuctionsByUser(Long userId) {
+    public Iterable<Auction> fetchAuctionsByUser(Long userId) {
         return userRepository.findById(userId).get().getAuctions();
     }
 
     @Override
-    public Set<Bid> fetchBidsByUser(Long userId) {
+    public Iterable<Bid> fetchBidsByUser(Long userId) {
         return userRepository.findById(userId).get().getBids();
     }
 

@@ -1,12 +1,8 @@
 package com.example.bwengproj.services;
 
 import com.example.bwengproj.model.Bid;
-import com.example.bwengproj.model.Product;
 import com.example.bwengproj.repository.BidRepository;
-import com.example.bwengproj.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 public class BidServiceImpl implements BidService{
     @Autowired
@@ -20,8 +16,8 @@ public class BidServiceImpl implements BidService{
 
     // read operation
     @Override
-    public List<Bid> fetchBidList(){
-        return (List<Bid>) bidRepository.findAll();
+    public Iterable<Bid> fetchBidList() {
+        return bidRepository.findAll();
     }
 
     /* update operation

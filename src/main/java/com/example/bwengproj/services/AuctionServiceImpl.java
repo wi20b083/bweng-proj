@@ -4,7 +4,6 @@ import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.repository.AuctionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
 import java.util.Objects;
 
 public class AuctionServiceImpl implements AuctionService{
@@ -20,8 +19,8 @@ public class AuctionServiceImpl implements AuctionService{
 
     // read operation
     @Override
-    public List<Auction> fetchAuctionList() {
-        return (List<Auction>) auctionRepository.findAll();
+    public Iterable<Auction> fetchAuctionList() {
+        return auctionRepository.findAll();
     }
 
     @Override
