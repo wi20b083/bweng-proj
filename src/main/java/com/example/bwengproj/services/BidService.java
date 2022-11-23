@@ -17,4 +17,7 @@ public interface BidService {
 
     // delete operation
     void deleteBidById(Long bidId);
+
+    // find by id
+    Bid fetchBidById(Long bidId);
 }

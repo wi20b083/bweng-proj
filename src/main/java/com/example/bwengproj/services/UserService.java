@@ -21,6 +21,8 @@ public interface UserService {
     // delete operation
     void deleteUserById(Long userId);
 
+    User fetchUserById(Long userId);
+
     //fetch auction list by user id
     Set<Auction> fetchAuctionsByUser(Long userId);
 

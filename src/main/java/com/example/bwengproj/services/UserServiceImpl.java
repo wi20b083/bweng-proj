@@ -68,4 +68,9 @@ public class UserServiceImpl implements UserService{
     public Set<Bid> fetchBidsByUser(Long userId) {
         return userRepository.findById(userId).get().getBids();
     }
+
+    @Override
+    public User fetchUserById(Long userId) {
+        return userRepository.findById(userId).get();
+    }
 }

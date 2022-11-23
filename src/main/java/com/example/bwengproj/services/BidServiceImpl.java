@@ -58,4 +58,11 @@ public class BidServiceImpl implements BidService{
     public void deleteBidById(Long bidId) {
         bidRepository.deleteById(bidId);
     }
+
+    // find by id
+
+    @Override
+    public Bid fetchBidById(Long bidId) {
+        return bidRepository.findById(bidId).get();
+    }
 }

@@ -18,4 +18,7 @@ public interface ProductService {
     // delete operation
     void deleteProductById(Long productId);
 
+    //find by id
+    Product fetchProductById(Long productId);
+
 }
