@@ -3,7 +3,9 @@ package com.example.bwengproj.services;
 import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.model.User;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface UserService {
 
     // save operation

@@ -1,7 +1,9 @@
 package com.example.bwengproj.services;
 
 import com.example.bwengproj.model.Bid;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface BidService {
     // save operation
     Bid saveBid(Bid bid);

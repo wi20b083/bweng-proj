@@ -3,7 +3,9 @@ package com.example.bwengproj.services;
 import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.repository.BidRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class BidServiceImpl implements BidService{
     @Autowired
     private BidRepository bidRepository;

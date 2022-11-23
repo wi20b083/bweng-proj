@@ -2,13 +2,14 @@ package com.example.bwengproj.controllers;
 
 import com.example.bwengproj.model.Product;
 import com.example.bwengproj.services.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
 public class ProductController {
-    //@Autowired
+    @Autowired
     private ProductService productService;
 
     // Save operation

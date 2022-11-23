@@ -4,13 +4,14 @@ import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.model.User;
 import com.example.bwengproj.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
 public class UserController {
-    //@Autowired
+    @Autowired
     private UserService userService;
 
 
@@ -32,31 +33,31 @@ public class UserController {
     // /users/id
     // Update operation
     @PutMapping("/users/{id}")
-    public User updateUser(@RequestBody User user, @PathVariable("id") long userId) {
+    public User updateUser(@RequestBody User user, @PathVariable("id") Long userId) {
         return userService.updateUser(user, userId);
     }
 
     // Delete operation
     @DeleteMapping("/users/{id}")
-    public String deleteUserById(@PathVariable("id") long userId) {
+    public String deleteUserById(@PathVariable("id") Long userId) {
         userService.deleteUserById(userId);
         return "Deleted Successfully";
     }
 
     // get by id
     @GetMapping("/users/{id}")
-    public User fetchUserByID(@PathVariable("id") long userId) {
+    public User fetchUserByID(@PathVariable("id") Long userId) {
         return userService.fetchUserById(userId);
     }
 
     // /users/id/data
     @GetMapping("/users/{id}/auctions")
-    public Iterable<Auction> fetchAuctionsByUser(@PathVariable("id") long userId) {
+    public Iterable<Auction> fetchAuctionsByUser(@PathVariable("id") Long userId) {
         return userService.fetchAuctionsByUser(userId);
     }
 
     @GetMapping("/users/{id}/bids")
-    public Iterable<Bid> fetchBidsByUser(@PathVariable("id") long userId) {
+    public Iterable<Bid> fetchBidsByUser(@PathVariable("id") Long userId) {
         return userService.fetchBidsByUser(userId);
     }
 }

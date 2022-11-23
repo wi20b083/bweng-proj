@@ -1,7 +1,9 @@
 package com.example.bwengproj.services;
 
 import com.example.bwengproj.model.Product;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface ProductService {
     // save operation
     Product saveProduct(Product product);

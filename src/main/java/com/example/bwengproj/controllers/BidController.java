@@ -2,6 +2,7 @@ package com.example.bwengproj.controllers;
 
 import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.services.BidService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -9,7 +10,7 @@ import javax.validation.Valid;
 @RestController
 public class BidController {
 
-    //@Autowired
+    @Autowired
     private BidService bidService;
 
     // Save operation

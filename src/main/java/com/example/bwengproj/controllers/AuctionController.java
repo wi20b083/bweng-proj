@@ -2,6 +2,7 @@ package com.example.bwengproj.controllers;
 
 import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.services.AuctionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -9,7 +10,7 @@ import javax.validation.Valid;
 @RestController
 public class AuctionController {
 
-    //@Autowired
+    @Autowired
     private AuctionService auctionService;
 
     // Save operation

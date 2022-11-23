@@ -1,10 +1,7 @@
 package com.example.bwengproj.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -14,11 +11,12 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")

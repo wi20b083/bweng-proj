@@ -1,9 +1,6 @@
 package com.example.bwengproj.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,11 +11,12 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Auction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
     private Date startDate;
     private Date endDate;
     private boolean status;

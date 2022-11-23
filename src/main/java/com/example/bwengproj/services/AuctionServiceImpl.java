@@ -3,9 +3,11 @@ package com.example.bwengproj.services;
 import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.repository.AuctionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+@Service
 public class AuctionServiceImpl implements AuctionService{
 
     @Autowired

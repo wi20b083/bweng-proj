@@ -1,7 +1,9 @@
 package com.example.bwengproj.services;
 
 import com.example.bwengproj.model.Auction;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface AuctionService {
 
     // save operation
