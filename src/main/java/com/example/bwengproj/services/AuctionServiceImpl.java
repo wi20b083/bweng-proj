@@ -49,10 +49,7 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public Auction updateAuction(Auction auction, Integer auctionId) {
-        Auction auctionDB = auctionRepository.findById(auctionId).get();
-
-        // insert code with finished methods from Auction in model
+    public List<Auction> fetchAuctionByUserId(Long userId) {
 
         return null;
     }
