@@ -48,15 +48,6 @@ public class AuctionServiceImpl implements AuctionService{
         return auctionRepository.save(aucDB);
     }
 
-    @Override
-    public Auction updateAuction(Auction auction, Integer auctionId) {
-        Auction auctionDB = auctionRepository.findById(auctionId).get();
-
-        // insert code with finished methods from Auction in model
-
-        return null;
-    }
-
     // delete operation
     @Override
     public void deleteAuctionById(Long auctionId) {
