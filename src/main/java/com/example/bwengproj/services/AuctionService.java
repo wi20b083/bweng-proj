@@ -12,6 +12,12 @@ public interface AuctionService {
     // read operation
     List<Auction> fetchAuctionList();
 
+    // find by id
+    Auction fetchAuctionById(Long auctionId);
+
+    // find by userId
+    List<Auction> fetchAuctionByUserId(Long userId);
+
     // update operation
     Auction updateAuction(Auction auction, Long auctionId);
 
