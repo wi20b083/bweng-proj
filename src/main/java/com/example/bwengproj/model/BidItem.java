@@ -3,6 +3,7 @@ package com.example.bwengproj.model;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 
 @Entity
 @AllArgsConstructor
@@ -24,6 +25,9 @@ public class BidItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @Min(value = 1, message = "Amount cannot be 0.")
     private int amount;
+
+    @Min(value = 0, message = "Price must be a positive value.")
     private int price;
 }

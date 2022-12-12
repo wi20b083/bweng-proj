@@ -5,18 +5,24 @@ import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.model.User;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Service
 public interface UserService {
 
     // save operation
-    User saveUser(User user);
+    User saveUser(@Valid User user);
 
     // read operation
     Iterable<User> fetchUserList();
 
     // update operation
-    User updateUser(User user, Long userId);
+    User updateUser(@Valid User user, Long userId);
 
+    User updatePassword(String oldPw, String newPw, Long userId);
 
     // delete operation
     void deleteUserById(Long userId);
@@ -30,5 +36,7 @@ public interface UserService {
     //fetch bid list by user id
     Iterable<Bid> fetchBidsByUser(Long userId);
 
+    User fetchUserByUsername(@NotBlank @NotNull String username);
 
+    User fetchUserByEmail(@Email String email);
 }

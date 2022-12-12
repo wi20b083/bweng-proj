@@ -5,14 +5,16 @@ import com.example.bwengproj.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
+
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
     // save operation
     @Override
-    public Product saveProduct(Product product) {
+    public Product saveProduct(@Valid Product product) {
         return productRepository.save(product);
     }
 
@@ -43,7 +45,7 @@ public class ProductServiceImpl implements ProductService{
     }*/
 
     @Override
-    public Product updateProduct(Product product, Long productId) {
+    public Product updateProduct(@Valid Product product, Long productId) {
         Product productDB = productRepository.findById(productId).get();
 
         // insert code with finished methods from Auction in model

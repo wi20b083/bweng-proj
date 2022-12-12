@@ -33,7 +33,7 @@ public class UserController {
     // /users/id
     // Update operation
     @PutMapping("/users/{id}")
-    public User updateUser(@RequestBody User user, @PathVariable("id") Long userId) {
+    public User updateUser(@Valid @RequestBody User user, @PathVariable("id") Long userId) {
         return userService.updateUser(user, userId);
     }
 

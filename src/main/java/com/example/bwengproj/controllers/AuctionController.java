@@ -13,6 +13,7 @@ public class AuctionController {
     @Autowired
     private AuctionService auctionService;
 
+    // /auctions
     // Save operation
     @PostMapping("/auctions")
     public Auction saveAuction(@Valid @RequestBody Auction auction){
@@ -27,7 +28,7 @@ public class AuctionController {
 
     // Update operation
     @PutMapping("/auctions/{id}")
-    public Auction updateAuction(@RequestBody Auction auction, @PathVariable("id") long auctionId){
+    public Auction updateAuction(@Valid @RequestBody Auction auction, @PathVariable("id") long auctionId) {
         return auctionService.updateAuction(auction, auctionId);
     }
 

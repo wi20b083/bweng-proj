@@ -13,6 +13,7 @@ public class BidController {
     @Autowired
     private BidService bidService;
 
+    // /bids
     // Save operation
     @PostMapping("/bids")
     public Bid saveBid(@Valid @RequestBody Bid bid){
@@ -28,7 +29,7 @@ public class BidController {
 
     // Update operation
     @PutMapping("/bids/{id}")
-    public Bid updateBid(@RequestBody Bid bid, @PathVariable("id") long bidId){
+    public Bid updateBid(@Valid @RequestBody Bid bid, @PathVariable("id") long bidId) {
         return bidService.updateBid(bid, bidId);
     }
 

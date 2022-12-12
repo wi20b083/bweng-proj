@@ -5,14 +5,16 @@ import com.example.bwengproj.repository.BidRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
+
 @Service
-public class BidServiceImpl implements BidService{
+public class BidServiceImpl implements BidService {
     @Autowired
     private BidRepository bidRepository;
 
     // save operation
     @Override
-    public Bid saveBid(Bid bid) {
+    public Bid saveBid(@Valid Bid bid) {
         return bidRepository.save(bid);
     }
 
@@ -43,7 +45,7 @@ public class BidServiceImpl implements BidService{
     }*/
 
     @Override
-    public Bid updateBid(Bid bid, Long bidId) {
+    public Bid updateBid(@Valid Bid bid, Long bidId) {
         Bid bidDB = bidRepository.findById(bidId).get();
 
         // insert code with finished methods from Auction in model

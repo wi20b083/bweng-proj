@@ -5,6 +5,7 @@ import com.example.bwengproj.repository.AuctionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.Objects;
 
 @Service
@@ -15,7 +16,7 @@ public class AuctionServiceImpl implements AuctionService{
 
     // save operation
     @Override
-    public Auction saveAuction(Auction auction) {
+    public Auction saveAuction(@Valid Auction auction) {
         return auctionRepository.save(auction);
     }
 
@@ -32,7 +33,7 @@ public class AuctionServiceImpl implements AuctionService{
 
     // update operation
     @Override
-    public Auction updateAuction(Auction auction, Long auctionId) {
+    public Auction updateAuction(@Valid Auction auction, Long auctionId) {
         Auction aucDB = auctionRepository.findById(auctionId).get();
 
         if (Objects.nonNull(auction.getStartDate()) && !aucDB.getStartDate().equals(auction.getStartDate())) {
