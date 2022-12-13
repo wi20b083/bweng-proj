@@ -1,6 +1,7 @@
 package com.example.bwengproj.services;
 
 import com.example.bwengproj.model.Auction;
+import com.example.bwengproj.model.Bid;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
@@ -23,6 +24,8 @@ public interface AuctionService {
 
     // delete operation
     void deleteAuctionById(Long auctionId);
+
+    Auction addBidToAuctionById(@Valid Bid bid, Long auctionId);
 
 
 }

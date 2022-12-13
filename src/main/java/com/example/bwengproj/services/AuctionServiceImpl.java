@@ -1,6 +1,7 @@
 package com.example.bwengproj.services;
 
 import com.example.bwengproj.model.Auction;
+import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.repository.AuctionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,5 +62,11 @@ public class AuctionServiceImpl implements AuctionService{
         auctionRepository.deleteById(auctionId);
     }
 
+    @Override
+    public Auction addBidToAuctionById(@Valid Bid bid, Long auctionId) {
+        Auction aucDB = fetchAuctionById(auctionId);
+        aucDB.getBids().add(bid);
+        return auctionRepository.save(aucDB);
+    }
 
 }

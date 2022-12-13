@@ -1,7 +1,5 @@
 package com.example.bwengproj.controllers;
 
-import com.example.bwengproj.model.Auction;
-import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.model.User;
 import com.example.bwengproj.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,32 +30,29 @@ public class UserController {
 
     // /users/id
     // Update operation
-    @PutMapping("/users/{id}")
+    @PutMapping("/users/id/{id}")
     public User updateUser(@Valid @RequestBody User user, @PathVariable("id") Long userId) {
         return userService.updateUser(user, userId);
     }
 
     // Delete operation
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/users/id/{id}")
     public String deleteUserById(@PathVariable("id") Long userId) {
         userService.deleteUserById(userId);
         return "Deleted Successfully";
     }
 
     // get by id
-    @GetMapping("/users/{id}")
+    @GetMapping("/users/id/{id}")
     public User fetchUserByID(@PathVariable("id") Long userId) {
         return userService.fetchUserById(userId);
     }
 
-    // /users/id/data
-    @GetMapping("/users/{id}/auctions")
-    public Iterable<Auction> fetchAuctionsByUser(@PathVariable("id") Long userId) {
-        return userService.fetchAuctionsByUser(userId);
+    @GetMapping("/users/username/{username}")
+    public User fetchUserByUserName(@PathVariable("username") String username) {
+        return userService.fetchUserByUsername(username);
     }
 
-    @GetMapping("/users/{id}/bids")
-    public Iterable<Bid> fetchBidsByUser(@PathVariable("id") Long userId) {
-        return userService.fetchBidsByUser(userId);
-    }
+    //@PostMapping("/login")
+    //public String login(@RequestBody )
 }

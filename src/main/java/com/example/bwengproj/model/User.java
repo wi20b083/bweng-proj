@@ -64,6 +64,11 @@ public class User {
 
     private boolean status;
 
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    private String address;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Auction> auctions;
 
