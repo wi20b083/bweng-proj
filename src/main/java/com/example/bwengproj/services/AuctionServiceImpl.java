@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import java.util.Objects;
 
 @Service
-public class AuctionServiceImpl implements AuctionService{
+public class AuctionServiceImpl implements AuctionService {
 
     @Autowired
     private AuctionRepository auctionRepository;

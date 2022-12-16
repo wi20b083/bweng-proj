@@ -34,12 +34,14 @@ public class Auction {
     @NotNull(message = "Delivery date is required.")
     @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm")
     private Date deliveryDate;
-
-    private int total = total();
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "auction")
+    private Set<AuctionItem> items;
+    private int total = total();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "auction")
+    private Set<Bid> bids;
 
     private int total() {
         int i = 0;
@@ -52,10 +54,4 @@ public class Auction {
         }
         return i;
     }
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "auction")
-    private Set<AuctionItem> items;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "auction")
-    private Set<Bid> bids;
 }

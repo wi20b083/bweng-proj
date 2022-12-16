@@ -14,14 +14,14 @@ public class ProductController {
 
     // Save operation
     @PostMapping("/products")
-    public Product saveProduct(@Valid @RequestBody Product product){
+    public Product saveProduct(@Valid @RequestBody Product product) {
 
         return productService.saveProduct(product);
     }
 
     // Read operation
     @GetMapping("/products")
-    public Iterable<Product> fetchProductList(){
+    public Iterable<Product> fetchProductList() {
         return productService.fetchProductList();
     }
 
@@ -33,14 +33,14 @@ public class ProductController {
 
     // Delete operation
     @DeleteMapping("/products/{id}")
-    public String deleteProductById(@PathVariable("id") long productId){
+    public String deleteProductById(@PathVariable("id") long productId) {
         productService.deleteProductById(productId);
         return "Deleted Successfully";
     }
 
     // get by id
     @GetMapping("/products/{id}")
-    public Product fetchProductByID(@PathVariable("id") long productId){
+    public Product fetchProductByID(@PathVariable("id") long productId) {
         return productService.fetchProductById(productId);
     }
 }

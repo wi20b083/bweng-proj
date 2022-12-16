@@ -1,4 +1,4 @@
-package com.example.bwengproj.util;
+package com.example.bwengproj.security;
 
 import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;

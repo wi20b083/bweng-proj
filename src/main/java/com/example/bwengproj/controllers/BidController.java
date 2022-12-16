@@ -16,14 +16,14 @@ public class BidController {
     // /bids
     // Save operation
     @PostMapping("/bids")
-    public Bid saveBid(@Valid @RequestBody Bid bid){
+    public Bid saveBid(@Valid @RequestBody Bid bid) {
 
         return bidService.saveBid(bid);
     }
 
     // Read operation
     @GetMapping("/bids")
-    public Iterable<Bid> fetchBidList(){
+    public Iterable<Bid> fetchBidList() {
         return bidService.fetchBidList();
     }
 
@@ -35,14 +35,14 @@ public class BidController {
 
     // Delete operation
     @DeleteMapping("/bids/{id}")
-    public String deleteBidById(@PathVariable("id") long bidId){
+    public String deleteBidById(@PathVariable("id") long bidId) {
         bidService.deleteBidById(bidId);
         return "Deleted Successfully";
     }
 
     // get by id
     @GetMapping("/bids/{id}")
-    public Bid fetchBidByID(@PathVariable("id") long bidId){
+    public Bid fetchBidByID(@PathVariable("id") long bidId) {
         return bidService.fetchBidById(bidId);
     }
 }

@@ -16,13 +16,13 @@ public class AuctionController {
     // /auctions
     // Save operation
     @PostMapping("/auctions")
-    public Auction saveAuction(@Valid @RequestBody Auction auction){
+    public Auction saveAuction(@Valid @RequestBody Auction auction) {
         return auctionService.saveAuction(auction);
     }
 
     // Read operation
     @GetMapping("/auctions")
-    public Iterable<Auction> fetchAuctionList(){
+    public Iterable<Auction> fetchAuctionList() {
         return auctionService.fetchAuctionList();
     }
 
@@ -34,14 +34,14 @@ public class AuctionController {
 
     // Delete operation
     @DeleteMapping("/auctions/{id}")
-    public String deleteAuctionById(@PathVariable("id") long auctionId){
+    public String deleteAuctionById(@PathVariable("id") long auctionId) {
         auctionService.deleteAuctionById(auctionId);
         return "Deleted Successfully";
     }
 
     // get auction by id
     @GetMapping("/auctions/{id}")
-    public Auction fetchAuctionByID(@PathVariable("id") long auctionId){
+    public Auction fetchAuctionByID(@PathVariable("id") long auctionId) {
         return auctionService.fetchAuctionById(auctionId);
     }
 }

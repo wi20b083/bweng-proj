@@ -22,16 +22,12 @@ public class Bid {
     @NotNull(message = "Delivery date is required.")
     @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm")
     private Date deliveryDate;
-
-    private int total = total();
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bid")
     private Set<BidItem> items;
-
+    private int total = total();
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "auction_id")
     private Auction auction;

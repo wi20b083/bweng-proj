@@ -4,7 +4,7 @@ import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.model.User;
 import com.example.bwengproj.repository.UserRepository;
-import com.example.bwengproj.util.SHA256;
+import com.example.bwengproj.security.SHA256;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +18,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
+    private final SHA256 hasher = new SHA256();
     @Autowired
     private UserRepository userRepository;
-    private final SHA256 hasher = new SHA256();
 
     // save operation
     @Override
@@ -36,7 +36,6 @@ public class UserServiceImpl implements UserService{
     }
 
     // update operation
-    //todo: validation
     @Override
     public User updateUser(@Valid User user, Long userId) {
         Optional<User> result = userRepository.findById(userId);

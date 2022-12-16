@@ -3,14 +3,13 @@ package com.example.bwengproj.services;
 import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.model.User;
-import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Service
+
 public interface UserService {
 
     // save operation
