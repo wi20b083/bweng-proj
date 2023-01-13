@@ -1,47 +1,40 @@
 package com.example.bwengproj.controllers;
 
-import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.services.AuctionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
+@RequestMapping("/auctions")
 public class AuctionController {
 
     @Autowired
     private AuctionService auctionService;
 
-    // /auctions
-    // Save operation
-    @PostMapping("/auctions")
-    public Auction saveAuction(@Valid @RequestBody Auction auction) {
-        return auctionService.saveAuction(auction);
+    @GetMapping("/all")
+    public ResponseEntity<?> getAll() {
+        return null;
     }
 
-    // Read operation
-    @GetMapping("/auctions")
-    public Iterable<Auction> fetchAuctionList() {
-        return auctionService.fetchAuctionList();
+    @PostMapping("/new")
+    public ResponseEntity<?> createAuction(String json) {
+        return null;
     }
 
-    // Update operation
-    @PutMapping("/auctions/{id}")
-    public Auction updateAuction(@Valid @RequestBody Auction auction, @PathVariable("id") long auctionId) {
-        return auctionService.updateAuction(auction, auctionId);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateAuction(@PathVariable Long id, @RequestParam(name = "state", required = false) Optional<Boolean> state, String json) {
+        return null;
     }
 
-    // Delete operation
-    @DeleteMapping("/auctions/{id}")
-    public String deleteAuctionById(@PathVariable("id") long auctionId) {
-        auctionService.deleteAuctionById(auctionId);
-        return "Deleted Successfully";
+    private void changeAuctionState(Long id) {
+
     }
 
-    // get auction by id
-    @GetMapping("/auctions/{id}")
-    public Auction fetchAuctionByID(@PathVariable("id") long auctionId) {
-        return auctionService.fetchAuctionById(auctionId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAuction(@PathVariable Long id) {
+        return null;
     }
 }

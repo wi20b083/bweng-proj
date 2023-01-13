@@ -1,13 +1,19 @@
 package com.example.bwengproj.model;
 
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,19 +21,14 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role")
-    @NotNull
-    @NotBlank
-    @NotEmpty
-    private Role role;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Role> roles = new ArrayList<>();
 
     @NotNull
     @NotBlank

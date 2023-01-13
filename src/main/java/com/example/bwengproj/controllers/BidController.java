@@ -1,48 +1,33 @@
 package com.example.bwengproj.controllers;
 
-import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.services.BidService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @RestController
+@RequestMapping("/bids")
 public class BidController {
-
     @Autowired
     private BidService bidService;
 
-    // /bids
-    // Save operation
-    @PostMapping("/bids")
-    public Bid saveBid(@Valid @RequestBody Bid bid) {
-
-        return bidService.saveBid(bid);
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllBids() {
+        return null;
     }
 
-    // Read operation
-    @GetMapping("/bids")
-    public Iterable<Bid> fetchBidList() {
-        return bidService.fetchBidList();
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getBidById(@PathVariable Long id) {
+        return null;
     }
 
-    // Update operation
-    @PutMapping("/bids/{id}")
-    public Bid updateBid(@Valid @RequestBody Bid bid, @PathVariable("id") long bidId) {
-        return bidService.updateBid(bid, bidId);
+    @PutMapping("/new")
+    public ResponseEntity<?> createBid(String json) {
+        return null;
     }
 
-    // Delete operation
-    @DeleteMapping("/bids/{id}")
-    public String deleteBidById(@PathVariable("id") long bidId) {
-        bidService.deleteBidById(bidId);
-        return "Deleted Successfully";
-    }
-
-    // get by id
-    @GetMapping("/bids/{id}")
-    public Bid fetchBidByID(@PathVariable("id") long bidId) {
-        return bidService.fetchBidById(bidId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteBid(@PathVariable Long id) {
+        return null;
     }
 }

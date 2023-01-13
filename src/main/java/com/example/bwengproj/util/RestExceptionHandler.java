@@ -1,5 +1,6 @@
 package com.example.bwengproj.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.core.Ordered;
@@ -44,6 +45,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         String error = ex.getParameterName() + " parameter is missing";
         return buildResponseEntity(new APIError(HttpStatus.BAD_REQUEST, error, ex));
     }
+
+    @ExceptionHandler(JsonProcessingException.class)
+    protected ResponseEntity<Object> handleJsonProcessingException(
+            JsonProcessingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        String error = "Error processing JSON";
+        return buildResponseEntity(new APIError(HttpStatus.BAD_REQUEST, error, ex));
+    }
+
 
     /**
      * Handle IllegalAccessException -> User has no permission to access site

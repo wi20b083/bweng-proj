@@ -1,7 +1,14 @@
 package com.example.bwengproj.model;
 
 
-public enum Role {
-    Admin,
-    Default;
+import org.springframework.security.core.GrantedAuthority;
+
+public enum Role implements GrantedAuthority {
+    ROLE_ADMIN,
+    ROLE_USER;
+
+    @Override
+    public String getAuthority() {
+        return name();
+    }
 }

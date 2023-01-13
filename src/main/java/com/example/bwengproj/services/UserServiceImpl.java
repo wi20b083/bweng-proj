@@ -4,7 +4,6 @@ import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.model.User;
 import com.example.bwengproj.repository.UserRepository;
-import com.example.bwengproj.security.SHA256;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,6 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final SHA256 hasher = new SHA256();
     @Autowired
     private UserRepository userRepository;
 
@@ -90,7 +88,7 @@ public class UserServiceImpl implements UserService {
     public User updatePassword(String oldPw, @Size(min = 8) String newPw, Long userId) {
         User userDB = userRepository.findById(userId).get();
 
-        if (Objects.nonNull(oldPw) && !"".equalsIgnoreCase(oldPw) && Objects.nonNull(newPw) && !"".equalsIgnoreCase(newPw)) {
+        /*if (Objects.nonNull(oldPw) && !"".equalsIgnoreCase(oldPw) && Objects.nonNull(newPw) && !"".equalsIgnoreCase(newPw)) {
             if (userDB.getPassword().equals(hasher.getSHA256Hash(oldPw))) {
                 if (!userDB.getPassword().equals(hasher.getSHA256Hash(newPw))) {
                     userDB.setPassword(hasher.getSHA256Hash(newPw));
@@ -100,7 +98,7 @@ public class UserServiceImpl implements UserService {
             } else {
                 throw new IllegalArgumentException("Wrong credentials.");
             }
-        }
+        }*/
         return userRepository.save(userDB);
     }
 
