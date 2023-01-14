@@ -1,46 +1,37 @@
 package com.example.bwengproj.controllers;
 
-import com.example.bwengproj.model.Product;
 import com.example.bwengproj.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @RestController
+@RequestMapping("/products")
 public class ProductController {
     @Autowired
     private ProductService productService;
 
-    // Save operation
-    @PostMapping("/products")
-    public Product saveProduct(@Valid @RequestBody Product product) {
-
-        return productService.saveProduct(product);
+    @GetMapping
+    public ResponseEntity<?> getAllProducts() {
+        return null;
     }
 
-    // Read operation
-    @GetMapping("/products")
-    public Iterable<Product> fetchProductList() {
-        return productService.fetchProductList();
+    @PostMapping("/new")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_ADMIN)")
+    public ResponseEntity<?> createProduct(String json) {
+        return null;
     }
 
-    // Update operation
-    @PutMapping("/products/{id}")
-    public Product updateProduct(@Valid @RequestBody Product product, @PathVariable("id") long productId) {
-        return productService.updateProduct(product, productId);
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_ADMIN)")
+    public ResponseEntity<?> updateProduct(@PathVariable Long id, String json) {
+        return null;
     }
 
-    // Delete operation
-    @DeleteMapping("/products/{id}")
-    public String deleteProductById(@PathVariable("id") long productId) {
-        productService.deleteProductById(productId);
-        return "Deleted Successfully";
-    }
-
-    // get by id
-    @GetMapping("/products/{id}")
-    public Product fetchProductByID(@PathVariable("id") long productId) {
-        return productService.fetchProductById(productId);
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_ADMIN)")
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
+        return null;
     }
 }
