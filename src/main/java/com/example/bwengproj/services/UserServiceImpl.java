@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -23,7 +22,7 @@ public class UserServiceImpl implements UserService {
 
     // save operation
     @Override
-    public User saveUser(@Valid User user) {
+    public User saveUser(User user) {
         return userRepository.save(user);
     }
 
@@ -35,46 +34,11 @@ public class UserServiceImpl implements UserService {
 
     // update operation
     @Override
-    public User updateUser(@Valid User user, Long userId) {
+    public User updateUser(User user, Long userId) {
         Optional<User> result = userRepository.findById(userId);
         if (result.isPresent()) {
             User userDB = result.get();
 
-            if (Objects.nonNull(user.getFirstName()) && !"".equalsIgnoreCase(user.getFirstName())) {
-                if (!user.getFirstName().equals(userDB.getFirstName())) {
-                    userDB.setFirstName(user.getFirstName());
-                }
-            }
-
-            if (Objects.nonNull(user.getLastName()) && !"".equalsIgnoreCase(user.getLastName())) {
-                if (!user.getLastName().equals(userDB.getLastName())) {
-                    userDB.setLastName(user.getLastName());
-                }
-            }
-
-            if (Objects.nonNull(user.getLastName()) && !"".equalsIgnoreCase(user.getLastName())) {
-                if (!user.getLastName().equals(userDB.getLastName())) {
-                    userDB.setLastName(user.getLastName());
-                }
-            }
-
-            if (Objects.nonNull(user.getUserName()) && !"".equalsIgnoreCase(user.getUserName())) {
-                if (!user.getUserName().equals(userDB.getUserName()) && fetchUserByEmail(user.getUserName()) == null) {
-                    userDB.setUserName(user.getUserName());
-                }
-            }
-
-            if (Objects.nonNull(user.getEmail()) && !"".equalsIgnoreCase(user.getEmail())) {
-                if (!user.getEmail().equals(userDB.getEmail()) && fetchUserByEmail(user.getEmail()) == null) {
-                    userDB.setEmail(user.getEmail());
-                }
-            }
-
-            if (Objects.nonNull(user.getImgLink()) && !"".equalsIgnoreCase(user.getImgLink())) {
-                if (!user.getImgLink().equals(userDB.getImgLink())) {
-                    userDB.setImgLink(user.getImgLink());
-                }
-            }
 
             return userRepository.save(userDB);
         } else {
@@ -131,5 +95,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public User fetchUserById(Long userId) {
         return userRepository.findById(userId).get();
+    }
+
+    private boolean isValid(String input, String fieldName) {
+        switch (fieldName) {
+            case "fname", "lname", "uname", "imgLink", "address" -> {
+                return (Objects.nonNull(input) && !input.isBlank() && !input.isEmpty());
+            }
+            case "pw" -> {
+                //Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character
+                return input.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
+            }
+            case "email" -> {
+                return input.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
+            }
+            default -> {
+                return false;
+            }
+        }
     }
 }

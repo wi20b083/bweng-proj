@@ -2,15 +2,13 @@ package com.example.bwengproj.services;
 
 import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.model.Bid;
-import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 
-@Service
 public interface AuctionService {
 
     // save operation
-    Auction saveAuction(@Valid Auction auction);
+    Auction saveAuction(Auction auction);
 
     // read operation
     Iterable<Auction> fetchAuctionList();

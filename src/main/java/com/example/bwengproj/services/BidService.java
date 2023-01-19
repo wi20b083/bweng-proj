@@ -1,11 +1,9 @@
 package com.example.bwengproj.services;
 
 import com.example.bwengproj.model.Bid;
-import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 
-@Service
 public interface BidService {
     // save operation
     Bid saveBid(@Valid Bid bid);
