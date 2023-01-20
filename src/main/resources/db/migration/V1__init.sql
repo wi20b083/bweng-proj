@@ -1,5 +1,3 @@
-CREATE SEQUENCE hibernate_sequence INCREMENT BY 1 START WITH 1;
-
 CREATE TABLE auction
 (
     id            BIGINT   NOT NULL,
@@ -60,7 +58,10 @@ CREATE TABLE user
     password   VARCHAR(255)          NOT NULL,
     email      VARCHAR(255)          NOT NULL,
     status     BIT(1)                NOT NULL,
-    address    VARCHAR(255)          NOT NULL,
+    street     VARCHAR(255)          NOT NULL,
+    street_nr  INT                   NOT NULL,
+    zip        INT                   NOT NULL,
+    city       VARCHAR(255)          NOT NULL,
     CONSTRAINT pk_user PRIMARY KEY (id)
 );
 

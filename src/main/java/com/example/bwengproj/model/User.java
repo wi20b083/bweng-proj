@@ -1,17 +1,14 @@
 package com.example.bwengproj.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
@@ -58,7 +55,7 @@ public class User implements Serializable {
     @NotNull
     @NotBlank
     @NotEmpty
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(unique = true)
@@ -73,26 +70,22 @@ public class User implements Serializable {
     @NotNull
     @NotBlank
     @NotEmpty
-    private String address;
+    private String street;
+
+    @Positive
+    private int streetNr;
+
+    @Positive
+    private int zip;
+
+    @NotNull
+    @NotBlank
+    @NotEmpty
+    private String city;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Auction> auctions = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Bid> bids = new HashSet<>();
-
-
-    //for update user without password
-    public User(Long id, String firstName, String lastName, String imgLink, String userName, String email, String address, boolean status) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.imgLink = imgLink;
-        this.userName = userName;
-        this.email = email;
-        this.address = address;
-        this.status = status;
-        this.password = null;
-    }
-
 }

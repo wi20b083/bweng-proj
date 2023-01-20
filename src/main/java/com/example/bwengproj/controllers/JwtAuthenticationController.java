@@ -54,7 +54,6 @@ public class JwtAuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody String json) throws JsonProcessingException {
-        System.out.println("hallo");
         User newUser = toPojo(json, User.class);
         return new ResponseEntity<>(toJson(userService.saveUser(newUser)), HttpStatus.ACCEPTED);
     }

@@ -41,14 +41,14 @@ class APIError {
         this();
         this.status = status;
         this.message = "Unexpected error";
-        this.debugMessage = ex.getLocalizedMessage();
+        this.debugMessage = ex.getMessage();
     }
 
     public APIError(HttpStatus status, String message, Throwable ex) {
         this();
         this.status = status;
         this.message = message;
-        this.debugMessage = ex.getLocalizedMessage();
+        this.debugMessage = ex.getMessage();
     }
 
     private void addSubError(APISubError subError) {

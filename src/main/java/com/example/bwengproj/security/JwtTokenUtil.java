@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
@@ -19,6 +20,7 @@ import java.util.function.Function;
 public class JwtTokenUtil implements Serializable {
 
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+    @Serial
     private static final long serialVersionUID = -2550185165626007488L;
     @Value("${jwt.secret}")
     private String secret;
@@ -34,9 +36,9 @@ public class JwtTokenUtil implements Serializable {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    public List<Role> getRoleFromToken(String token) {
+    public List<Role> getRolesFromToken(String token) {
         Claims claims = getAllClaimsFromToken(token);
-        return Collections.singletonList(claims.get("role", Role.class));
+        return Collections.singletonList(claims.get("roles", Role.class));
     }
 
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
@@ -69,10 +71,5 @@ public class JwtTokenUtil implements Serializable {
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
-    public Boolean canAccess(String token, Role role) {
-        List<Role> roles = getRoleFromToken(token);
-        return roles.contains(role);
     }
 }
