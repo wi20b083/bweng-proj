@@ -23,10 +23,19 @@ public class UserController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    @GetMapping("/{username}")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_USER)")
+    public ResponseEntity<?> getUserByUsername(@PathVariable String username, @RequestHeader(name = "Authorization") String token) throws IllegalAccessException {
+        if (unameMatchesUser(username, token)) {
+            return ResponseEntity.ok(userService.fetchUserByUsername(username));
+        } else {
+            throw new IllegalAccessException("You cannot request data of another user.");
+        }
+    }
+
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_USER)")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, String json, @RequestHeader(name = "Authorization") String token) throws JsonProcessingException, IllegalAccessException {
-        System.out.println(token);
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody String json, @RequestHeader(name = "Authorization") String token) throws JsonProcessingException, IllegalAccessException {
         if (idMatchesUser(id, token)) {
             User u = toPojo(json, User.class);
             return ResponseEntity.ok(userService.updateUser(id, u));
@@ -49,5 +58,10 @@ public class UserController {
     private boolean idMatchesUser(Long id, String token) {
         token = token.substring(7);
         return Objects.equals(userService.fetchUserByUsername(jwtTokenUtil.getUsernameFromToken(token)).getId(), id);
+    }
+
+    private boolean unameMatchesUser(String uname, String token) {
+        token = token.substring(7);
+        return Objects.equals(jwtTokenUtil.getUsernameFromToken(token), uname);
     }
 }

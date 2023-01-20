@@ -8,6 +8,8 @@ public interface UserService {
     // save operation
     User saveUser(User user);
 
+    User fetchUserById(Long id);
+
     // update operation
     User updateUser(Long userId, User user);
 

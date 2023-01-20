@@ -15,6 +15,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +40,8 @@ public class JwtAuthenticationController {
     @Autowired
     private UserService userService;
 
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody String json) throws Exception {
         JwtRequest authenticationRequest = toPojo(json, JwtRequest.class);
@@ -55,6 +58,7 @@ public class JwtAuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody String json) throws JsonProcessingException {
         User newUser = toPojo(json, User.class);
+        newUser.setPassword(encoder.encode(newUser.getPassword()));
         return new ResponseEntity<>(toJson(userService.saveUser(newUser)), HttpStatus.ACCEPTED);
     }
 
