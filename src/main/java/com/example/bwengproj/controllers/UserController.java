@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
-
+import static com.example.bwengproj.util.Util.toJson;
 import static com.example.bwengproj.util.Util.toPojo;
 
 @RestController
@@ -24,17 +24,17 @@ public class UserController {
     private JwtTokenUtil jwtTokenUtil;
 
     @GetMapping("/{username}")
-    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_USER)")
-    public ResponseEntity<?> getUserByUsername(@PathVariable String username, @RequestHeader(name = "Authorization") String token) throws IllegalAccessException {
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
+    public ResponseEntity<?> getUserByUsername(@PathVariable String username, @RequestHeader(name = "Authorization") String token) throws IllegalAccessException, JsonProcessingException {
         if (unameMatchesUser(username, token)) {
-            return ResponseEntity.ok(userService.fetchUserByUsername(username));
+            return ResponseEntity.ok(toJson(userService.fetchUserByUsername(username)));
         } else {
             throw new IllegalAccessException("You cannot request data of another user.");
         }
     }
 
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_USER)")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody String json, @RequestHeader(name = "Authorization") String token) throws JsonProcessingException, IllegalAccessException {
         if (idMatchesUser(id, token)) {
             User u = toPojo(json, User.class);
@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_USER)")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
     public ResponseEntity<?> deleteUser(@PathVariable Long id, @RequestHeader(name = "Authorization") String token) throws IllegalAccessException {
         if (idMatchesUser(id, token)) {
             userService.deleteUserById(id);

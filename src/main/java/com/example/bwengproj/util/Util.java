@@ -1,10 +1,24 @@
 package com.example.bwengproj.util;
 
+import com.example.bwengproj.security.JwtTokenUtil;
+import com.example.bwengproj.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.example.bwengproj.BwengProjApplication.objectMapper;
+import java.util.Objects;
+
 
 public class Util {
+
+    public static final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .registerModule(new ParameterNamesModule())
+            .registerModule(new Jdk8Module());
+
     public static String toJson(Object o) throws JsonProcessingException {
         return objectMapper.writeValueAsString(o);
     }

@@ -13,25 +13,25 @@ public class BidController {
     private BidService bidService;
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_ADMIN)")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
     public ResponseEntity<?> getAllBids() {
         return null;
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_ADMIN) or hasRole(T(com.example.bwengproj.model.Role).ROLE_USER)")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_ADMIN) or hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
     public ResponseEntity<?> getBidById(@PathVariable Long id) {
         return null;
     }
 
     @PostMapping("/new")
-    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_ADMIN) or hasRole(T(com.example.bwengproj.model.Role).ROLE_USER)")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_ADMIN) or hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
     public ResponseEntity<?> createBid(String json) {
         return null;
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_ADMIN) or hasRole(T(com.example.bwengproj.model.Role).ROLE_USER)")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_ADMIN) or hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
     public ResponseEntity<?> deleteBid(@PathVariable Long id) {
         return null;
     }

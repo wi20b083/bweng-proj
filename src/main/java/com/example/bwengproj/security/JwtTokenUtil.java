@@ -1,6 +1,6 @@
 package com.example.bwengproj.security;
 
-import com.example.bwengproj.model.Role;
+import com.example.bwengproj.model.status.Role;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

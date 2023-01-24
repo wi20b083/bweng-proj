@@ -18,19 +18,19 @@ public class ProductController {
     }
 
     @PostMapping("/new")
-    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_ADMIN)")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
     public ResponseEntity<?> createProduct(String json) {
         return null;
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_ADMIN)")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
     public ResponseEntity<?> updateProduct(@PathVariable Long id, String json) {
         return null;
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole(T(com.example.bwengproj.model.Role).ROLE_ADMIN)")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         return null;
     }

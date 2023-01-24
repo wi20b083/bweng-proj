@@ -1,46 +1,62 @@
 package com.example.bwengproj.model;
 
-import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
+import com.example.bwengproj.model.status.BidStatus;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.Date;
+import javax.validation.constraints.Positive;
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "bid")
 @Getter
 @Setter
-@Builder
 public class Bid {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotNull(message = "Delivery date is required.")
-    @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm")
-    private Date deliveryDate;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bid")
-    private Set<BidItem> items;
-    private int total = total();
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
+    @Column(name = "delivery_date_time", columnDefinition = "TIMESTAMP WITHOUT TIMEZONE")
+    private LocalDateTime deliveryDateTime;
+
+    @Enumerated(EnumType.STRING)
+    private BidStatus status;
+
+    //Auction auction
+
+    @OneToMany(mappedBy = "bid", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<BidItem> items = new HashSet<>();
+
+    public void addItem(BidItem item) {
+        items.add(item);
+        item.setBid(this);
+    }
+
+    public void removeItem(BidItem item) {
+        items.remove(item);
+        item.setBid(null);
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "auction_id")
     private Auction auction;
 
-    private int total() {
-        int i = 0;
-        if (items != null) {
-            if (items.size() > 0) {
-                for (BidItem item : items) {
-                    i += item.getPrice();
-                }
-            }
-        }
-        return i;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if(!(o instanceof Bid)) return false;
+        return id != null && id.equals(((Bid) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

@@ -1,32 +1,42 @@
 package com.example.bwengproj.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "auction_item")
 @Getter
 @Setter
-@Builder
 public class AuctionItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "auction_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Auction auction;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
-    @Min(value = 1, message = "Amount cannot be 0.")
-    private int amount;
+    @Positive
+    @Column(name = "amount")
+    private Integer amount;
 
-    @Min(value = 0, message = "Price must be a positive value.")
-    private int price;
+    @Positive
+    @Column(name = "cost_per_unit")
+    private Integer costPerUnit;
+
+
+    @Positive
+    @Column(name = "total")
+    private Integer total;
+
+    @PrePersist
+    private void total() {
+        this.total = this.amount * this.costPerUnit;
+    }
 }

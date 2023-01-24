@@ -125,14 +125,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(new APIError(HttpStatus.NOT_FOUND, ex));
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    protected ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex,
-                                                                  WebRequest request) {
-        if (ex.getCause() instanceof ConstraintViolationException) {
-            return buildResponseEntity(new APIError(HttpStatus.CONFLICT, "Database error", ex.getCause()));
-        }
-        return buildResponseEntity(new APIError(HttpStatus.INTERNAL_SERVER_ERROR, ex));
-    }
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleGenericException(Exception ex, WebRequest request) {

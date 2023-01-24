@@ -1,57 +1,73 @@
 package com.example.bwengproj.model;
 
-import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
+import com.example.bwengproj.model.status.AuctionStatus;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "auction")
 @Getter
 @Setter
-@Builder
 public class Auction {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotNull(message = "Start date is required.")
-    @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm")
-    private Date startDate;
-
-    @NotNull(message = "End date is required.")
-    @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm")
-    private Date endDate;
-
-
-    private boolean status;
-
-    @NotNull(message = "Delivery date is required.")
-    @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm")
-    private Date deliveryDate;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "auction")
+
+    @Column(name = "start_date_time", columnDefinition = "TIMESTAMP WITHOUT TIMEZONE")
+    private LocalDateTime startDateTime;
+
+    @Column(name = "delivery_date_time", columnDefinition = "TIMESTAMP WITHOUT TIMEZONE")
+    private LocalDateTime deliveryDateTime;
+
+    @Column(name = "end_date_time", columnDefinition = "TIMESTAMP WITHOUT TIMEZONE")
+    private LocalDateTime endDateTime;
+
+    @Enumerated(EnumType.STRING)
+    private AuctionStatus status;
+
+    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AuctionItem> items;
-    private int total = total();
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "auction")
+
+    public void addItem(AuctionItem item) {
+        items.add(item);
+        item.setAuction(this);
+    }
+
+    public void removeItem(AuctionItem item) {
+        items.remove(item);
+        item.setAuction(null);
+    }
+
+    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Bid> bids;
 
-    private int total() {
-        int i = 0;
-        if (items != null) {
-            if (items.size() > 0) {
-                for (AuctionItem item : items) {
-                    i += item.getPrice();
-                }
-            }
-        }
-        return i;
+    public void addBid(Bid bid) {
+        bids.add(bid);
+        bid.setAuction(this);
+    }
+
+    public void removeBid(Bid bid) {
+        bids.remove(bid);
+        bid.setAuction(null);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if(!(o instanceof Auction)) return false;
+        return id != null && id.equals(((Auction) o).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
