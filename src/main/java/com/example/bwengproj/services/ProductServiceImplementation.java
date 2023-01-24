@@ -4,6 +4,7 @@ import com.example.bwengproj.dto.ProductDto;
 import com.example.bwengproj.model.Product;
 import com.example.bwengproj.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -18,6 +19,15 @@ public class ProductServiceImplementation implements ProductService {
     @Override
     public Product save(Product product) {
         return productRepository.save(product);
+    }
+
+    @Override
+    public Product create(ProductDto dto) {
+        Product db = new Product();
+        db.setName(dto.name());
+        db.setDescription(dto.description());
+        db.setImagePath(dto.imagePath());
+        return productRepository.save(db);
     }
 
     @Override

@@ -3,8 +3,6 @@ package com.example.bwengproj.controllers;
 import com.example.bwengproj.dto.AuctionDto;
 import com.example.bwengproj.dto.AuctionItemDto;
 import com.example.bwengproj.model.Auction;
-import com.example.bwengproj.model.AuctionItem;
-import com.example.bwengproj.model.User;
 import com.example.bwengproj.security.JwtTokenUtil;
 import com.example.bwengproj.services.AuctionService;
 import com.example.bwengproj.services.UserService;
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.boot.json.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -87,13 +84,6 @@ public class AuctionController {
         return response(auction);
     }
 
-    //not authenticated
-    @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable Long id) throws JsonProcessingException {
-        Auction auction = auctionService.get(id);
-        return response(auction);
-    }
-
     @PutMapping("/{id}")
     @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody String json, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
@@ -103,6 +93,18 @@ public class AuctionController {
             return response(auction);
         } else {
             throw new IllegalAccessException("You cannot update another user's auctions");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
+    public ResponseEntity<?> delete(@PathVariable Long id, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
+        Auction a = auctionService.get(id);
+        if(tokenMatchesRequest(a.getUser().getId(), token)) {
+            auctionService.delete(id);
+            return response(null);
+        } else {
+            throw new IllegalAccessException("You cannot delete another user's auctions");
         }
     }
 

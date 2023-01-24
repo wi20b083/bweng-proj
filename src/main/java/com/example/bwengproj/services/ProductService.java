@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ProductService {
     Product save(Product product);
+    Product create(ProductDto dto);
     List<Product> getAll();
     Product get(Long id);
     Product update(Long id, ProductDto dto);
