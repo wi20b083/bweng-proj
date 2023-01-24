@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +22,7 @@ public class Bid {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @Column(name = "delivery_date_time", columnDefinition = "TIMESTAMP WITHOUT TIMEZONE")
+    @Column(name = "delivery_date_time", columnDefinition = "TIMESTAMP")
     private LocalDateTime deliveryDateTime;
 
     @Enumerated(EnumType.STRING)

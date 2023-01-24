@@ -21,13 +21,13 @@ public class Auction {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @Column(name = "start_date_time", columnDefinition = "TIMESTAMP WITHOUT TIMEZONE")
+    @Column(name = "start_date_time", columnDefinition = "TIMESTAMP")
     private LocalDateTime startDateTime;
 
-    @Column(name = "delivery_date_time", columnDefinition = "TIMESTAMP WITHOUT TIMEZONE")
+    @Column(name = "delivery_date_time", columnDefinition = "TIMESTAMP")
     private LocalDateTime deliveryDateTime;
 
-    @Column(name = "end_date_time", columnDefinition = "TIMESTAMP WITHOUT TIMEZONE")
+    @Column(name = "end_date_time", columnDefinition = "TIMESTAMP")
     private LocalDateTime endDateTime;
 
     @Enumerated(EnumType.STRING)
@@ -58,6 +58,8 @@ public class Auction {
         bids.remove(bid);
         bid.setAuction(null);
     }
+
+    //TODO: private Set<String> categories;
 
     @Override
     public boolean equals(Object o) {

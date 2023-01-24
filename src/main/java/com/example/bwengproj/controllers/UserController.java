@@ -44,15 +44,15 @@ public class UserController {
      * @param id The requested {@link User}'s ID.
      * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the found {@link User} entity attached.
      */
-    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
+    @PreAuthorize("hasAnyRole(T(com.example.bwengproj.model.status.Role).ROLE_USER, T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
     @GetMapping("/users/{id}")
     public ResponseEntity<?> get(@PathVariable Long id, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
-        if(tokenMatchesRequest(id, token)) {
-            User user = userService.get(id);
-            return response(user);
-        } else {
-            throw new IllegalAccessException("You cannot request another user's data.");
-        }
+        List<Role> roles = jwtTokenUtil.getRolesFromToken(token);
+
+        if (!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(id, token)) throw new IllegalAccessException("You cannot request another user's data.");
+
+        User user = userService.get(id);
+        return response(user);
     }
 
     /**
@@ -63,28 +63,26 @@ public class UserController {
      * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the updated {@link User} entity attached.
      *
      */
-    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
+    @PreAuthorize("hasAnyRole(T(com.example.bwengproj.model.status.Role).ROLE_USER, T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
     @PutMapping("/users/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody String json, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
-        if(tokenMatchesRequest(id, token)) {
-            UserDto dto = objectMapper.readValue(json, UserDto.class);
-            User user = userService.update(id, dto);
-            return response(user);
-        } else {
-            throw new IllegalAccessException("You cannot update another user's data.");
-        }
+        List<Role> roles = jwtTokenUtil.getRolesFromToken(token);
+
+        if (!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(id, token)) throw new IllegalAccessException("You cannot request another user's data.");
+
+        UserDto dto = objectMapper.readValue(json, UserDto.class);
+        User user = userService.update(id, dto);
+        return response(user);
     }
 
     @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
     @PutMapping("/reset-password/{id}")
     public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestBody String json, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
-        if(tokenMatchesRequest(id, token)) {
-            PasswordDto dto = objectMapper.readValue(json, PasswordDto.class);
-            userService.updatePassword(id, dto);
-            return response(null);
-        } else {
-            throw new IllegalAccessException("You cannot reset another user's password.");
-        }
+        if(!tokenMatchesRequest(id, token)) throw new IllegalAccessException("You cannot reset another user's password.");
+
+        PasswordDto dto = objectMapper.readValue(json, PasswordDto.class);
+        userService.updatePassword(id, dto);
+        return response(null);
     }
 
     /**
@@ -93,15 +91,22 @@ public class UserController {
      * @param id The {@link User}'s ID.
      * @return {@link ResponseEntity} with {@link HttpStatus} 200.
      */
-    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
+    @PreAuthorize("hasAnyRole(T(com.example.bwengproj.model.status.Role).ROLE_USER, T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
-        if(tokenMatchesRequest(id, token)) {
-            userService.delete(id);
-            return response(null);
-        } else {
-            throw new IllegalAccessException("You cannot delete another user.");
-        }
+        List<Role> roles = jwtTokenUtil.getRolesFromToken(token);
+
+        if (!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(id, token)) throw new IllegalAccessException("You cannot request another user's data.");
+
+        userService.delete(id);
+        return response(null);
+    }
+
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> changeStatus(@PathVariable Long id, @RequestParam Boolean status) throws JsonProcessingException {
+        userService.changeStatus(id, status);
+        return response(null);
     }
 
     /**

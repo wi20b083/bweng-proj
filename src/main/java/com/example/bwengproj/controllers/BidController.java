@@ -1,12 +1,12 @@
 package com.example.bwengproj.controllers;
 
-import com.example.bwengproj.dto.AuctionDto;
-import com.example.bwengproj.dto.AuctionItemDto;
-import com.example.bwengproj.model.Auction;
-import com.example.bwengproj.model.status.AuctionStatus;
+import com.example.bwengproj.dto.BidDto;
+import com.example.bwengproj.dto.BidItemDto;
+import com.example.bwengproj.model.Bid;
+import com.example.bwengproj.model.status.BidStatus;
 import com.example.bwengproj.model.status.Role;
 import com.example.bwengproj.security.JwtTokenUtil;
-import com.example.bwengproj.services.AuctionService;
+import com.example.bwengproj.services.BidService;
 import com.example.bwengproj.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +25,10 @@ import java.util.List;
 import static com.example.bwengproj.util.Util.objectMapper;
 
 @RestController
-@RequestMapping("/auctions")
-public class AuctionController {
-
+@RequestMapping("/bids")
+public class BidController {
     @Autowired
-    private AuctionService auctionService;
+    private BidService bidService;
 
     @Autowired
     private UserService userService;
@@ -38,73 +37,72 @@ public class AuctionController {
     private JwtTokenUtil jwtTokenUtil;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-
-    @GetMapping("/all")
-    public ResponseEntity<?> getAll() throws JsonProcessingException {
-        List<Auction> auctions = auctionService.getAll();
-        return response(auctions);
+    @GetMapping("/{id}/all")
+    public ResponseEntity<?> getAllByAuction(@PathVariable Long id) throws JsonProcessingException {
+        List<Bid> bids = bidService.getAll(id);
+        return response(bids);
     }
 
     @PostMapping
     @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
     public ResponseEntity<?> create(@RequestBody String json, @RequestHeader("Authorization") String token) throws JsonProcessingException, JSONException, IllegalAccessException {
-        AuctionDto dto;
-        Auction auction = null;
-        JSONObject auctionJson = new JSONObject(json);
-        JSONArray keys = auctionJson.names();
-        Long userId = null;
-        LocalDateTime startDateTime = null, deliveryDateTime = null, endDateTime = null;
+        BidDto dto;
+        Bid bid = null;
+        JSONObject bidJson = new JSONObject(json);
+        JSONArray keys = bidJson.names();
+        Long userId = null, auctionId = null;
+        LocalDateTime deliveryDateTime = null;
         for(int i = 0; i < keys.length(); i++) {
             String key = keys.getString(i);
-            JSONObject val = auctionJson.getJSONObject(key);
+            JSONObject val = bidJson.getJSONObject(key);
             switch(key) {
                 case "userId" -> userId = val.getLong(key);
-                case "startDateTime" -> startDateTime = LocalDateTime.parse(val.getString(key), formatter);
                 case "deliveryDateTime" -> deliveryDateTime = LocalDateTime.parse(val.getString(key), formatter);
-                case "endDateTime" -> endDateTime = LocalDateTime.parse(val.getString(key), formatter);
+                case "auctionId" -> auctionId = val.getLong(key);
                 case "items" -> {
-                    if(userId != null && startDateTime != null && deliveryDateTime != null && endDateTime != null) {
+                    if(userId != null && deliveryDateTime != null && auctionId != null) {
                         if(tokenMatchesRequest(userId, token)) {
-                            dto = new AuctionDto(userId, startDateTime, deliveryDateTime, endDateTime);
-                            auction = auctionService.create(dto);
+                            dto = new BidDto(userId, deliveryDateTime, auctionId);
+                            bid = bidService.create(dto);
                         } else {
-                            throw new IllegalAccessException("You cannot create auctions on behalf of other users.");
+                            throw new IllegalAccessException("You cannot create bids on behalf of other users.");
                         }
                     } else {
                         throw new JSONException("JSON could not be processed.");
                     }
-                    JSONArray items = auctionJson.getJSONArray(key);
+                    JSONArray items = bidJson.getJSONArray(key);
                     for(int j = 0; j < items.length(); j++) {
                         String s = items.getString(j);
-                        AuctionItemDto itemDto = objectMapper.readValue(s, AuctionItemDto.class);
-                        auctionService.add(auction.getId(), itemDto);
+                        BidItemDto itemDto = objectMapper.readValue(s, BidItemDto.class);
+                        bidService.add(bid.getId(), itemDto);
                     }
                 }
             }
         }
-        return response(auction);
+        return response(bid);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole(T(com.example.bwengproj.model.status.Role).ROLE_USER, T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody String json, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
         List<Role> roles = jwtTokenUtil.getRolesFromToken(token);
-        AuctionDto dto = objectMapper.readValue(json, AuctionDto.class);
+        BidDto dto = objectMapper.readValue(json, BidDto.class);
 
         if(!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(dto.userId(), token)) throw new IllegalAccessException("You cannot update another user's auction.");
 
-        Auction auction = auctionService.update(id, dto);
-        return response(auction);
+        Bid bid = bidService.update(id, dto);
+        return response(bid);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
     public ResponseEntity<?> delete(@PathVariable Long id, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
         List<Role> roles = jwtTokenUtil.getRolesFromToken(token);
-        Auction a = auctionService.get(id);
-        if(!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(a.getUser().getId(), token)) throw new IllegalAccessException("You cannot update another user's auction.");
+        Bid b = bidService.get(id);
 
-        auctionService.delete(id);
+        if(!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(b.getUser().getId(), token)) throw new IllegalAccessException("You cannot update another user's auction.");
+
+        bidService.delete(id);
         return response(null);
     }
 
@@ -112,15 +110,13 @@ public class AuctionController {
     @PreAuthorize("hasAnyRole(T(com.example.bwengproj.model.status.Role).ROLE_USER, T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
     public ResponseEntity<?> changeStatus(@PathVariable Long id, @RequestParam String status, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
         List<Role> roles = jwtTokenUtil.getRolesFromToken(token);
-        Auction a = auctionService.get(id);
+        Bid b = bidService.get(id);
 
-        if(!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(a.getUser().getId(), token)) throw new IllegalAccessException("You cannot change the status of another user's auction.");
+        if(!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(b.getUser().getId(), token)) throw new IllegalAccessException("You cannot change the status of another user's auction.");
 
-        AuctionStatus auctionStatus = AuctionStatus.valueOf(status);
+        BidStatus bidStatus = BidStatus.valueOf(status);
 
-        if(!roles.contains(Role.ROLE_ADMIN) && auctionStatus.equals(AuctionStatus.AUCTION_LOCKED)) throw new IllegalAccessException("You have no permission to change the auction status to " + auctionStatus.name());
-
-        auctionService.changeStatus(id, auctionStatus);
+        bidService.changeStatus(id, bidStatus);
         return response(null);
     }
 
@@ -133,4 +129,5 @@ public class AuctionController {
         Long userId = userService.get(username).getId();
         return userId.longValue() == id.longValue();
     }
+
 }

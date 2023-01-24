@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserServiceImplementation implements UserService {
@@ -59,10 +58,10 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public User changeStatus(Long id, UserStatus status) {
+    public void changeStatus(Long id, Boolean status) {
         User db = get(id);
-        db.setStatus(status);
-        return userRepository.save(db);
+        db.setStatus(status ? UserStatus.USER_UNLOCKED : UserStatus.USER_LOCKED);
+        userRepository.save(db);
     }
 
     @Override

@@ -108,4 +108,11 @@ public class AuctionServiceImplementation implements AuctionService {
         a.addItem(item);
         return save(a);
     }
+
+    @Override
+    public void changeStatus(Long id, AuctionStatus status) {
+        Auction db = get(id);
+        db.setStatus(status);
+        save(db);
+    }
 }

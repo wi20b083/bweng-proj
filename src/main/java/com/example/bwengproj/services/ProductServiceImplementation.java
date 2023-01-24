@@ -4,7 +4,6 @@ import com.example.bwengproj.dto.ProductDto;
 import com.example.bwengproj.model.Product;
 import com.example.bwengproj.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;

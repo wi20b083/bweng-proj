@@ -4,6 +4,7 @@ import com.example.bwengproj.dto.AuctionDto;
 import com.example.bwengproj.dto.AuctionItemDto;
 import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.model.User;
+import com.example.bwengproj.model.status.AuctionStatus;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface AuctionService {
     void delete(Long id);
     void deleteAll();
     Auction add(Long auctionId, AuctionItemDto dto);
+
+    void changeStatus(Long id, AuctionStatus status);
 }
