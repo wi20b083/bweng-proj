@@ -1,7 +1,6 @@
 package com.example.bwengproj.security;
 
 import com.example.bwengproj.model.status.Role;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
@@ -41,6 +41,16 @@ public class JwtTokenUtil implements Serializable {
         return Collections.singletonList(claims.get("roles", Role.class));
     }
 
+    public String getIpAddressFromToken(String token) {
+        Claims claims = getAllClaimsFromToken(token);
+        return claims.get("ip", String.class);
+    }
+
+    public String getUserAgentFromToken(String token) {
+        Claims claims = getAllClaimsFromToken(token);
+        return claims.get("user_agent", String.class);
+    }
+
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
@@ -58,18 +68,40 @@ public class JwtTokenUtil implements Serializable {
     }
 
     //generate token for user
-    public String generateToken(UserDetails userDetails) throws JsonProcessingException {
+    public String generateToken(UserDetails userDetails, HttpServletRequest request) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .claim("roles", userDetails.getAuthorities())
+                .claim("ip", getClientIp(request))
+                .claim("user_agent", getUserAgent(request))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
     //validate token
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateToken(String token, UserDetails userDetails, HttpServletRequest request) {
         final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        final String ipAddress = getIpAddressFromToken(token);
+        final String userAgent = getUserAgentFromToken(token);
+        return (userAgent.equals(getUserAgent(request)) && ipAddress.equals(getClientIp(request)) && username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+    private static String getClientIp(HttpServletRequest request) {
+        String remoteAddr = "";
+        if (request != null) {
+            remoteAddr = request.getHeader("X-FORWARDED-FOR");
+            if (remoteAddr == null || "".equals(remoteAddr)) {
+                remoteAddr = request.getRemoteAddr();
+            }
+        }
+        return remoteAddr;
+    }
+
+    public static String getUserAgent(HttpServletRequest request) {
+        String ua = "";
+        if (request != null) {
+            ua = request.getHeader("User-Agent");
+        }
+        return ua;
     }
 }

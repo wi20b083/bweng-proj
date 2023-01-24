@@ -1,22 +1,22 @@
 package com.example.bwengproj.services;
 
+import com.example.bwengproj.dto.PasswordDto;
+import com.example.bwengproj.dto.UserDto;
 import com.example.bwengproj.model.User;
+import com.example.bwengproj.model.status.UserStatus;
+
+import java.util.List;
 
 
 public interface UserService {
-
-    // save operation
-    User saveUser(User user);
-
-    User fetchUserById(Long id);
-
-    // update operation
-    User updateUser(Long userId, User user);
-
-    void updateUserPassword(Long userId, String Password);
-
-    // delete operation
-    void deleteUserById(Long userId);
-
-    User fetchUserByUsername(String username);
+    User save(User user);
+    User create(UserDto dto);
+    List<User> getAll();
+    User get(Long id);
+    User get(String username);
+    User update(Long id, UserDto dto);
+    User changeStatus(Long id, UserStatus status);
+    void updatePassword(Long id, PasswordDto dto);
+    void delete(Long id);
+    void deleteAll();
 }

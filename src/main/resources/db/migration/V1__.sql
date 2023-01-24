@@ -45,7 +45,7 @@ CREATE TABLE product
 (
     id            BIGINT AUTO_INCREMENT NOT NULL,
     name          VARCHAR(255)          NULL,
-    description VARCHAR(255)          NULL,
+    description VARCHAR(255)            NULL,
     image_path    VARCHAR(255)          NULL,
     CONSTRAINT pk_product PRIMARY KEY (id)
 );
@@ -53,6 +53,7 @@ CREATE TABLE product
 CREATE TABLE user
 (
     id         BIGINT AUTO_INCREMENT NOT NULL,
+    token      VARCHAR(255)          NULL,
     first_name VARCHAR(255)          NULL,
     last_name  VARCHAR(255)          NULL,
     email      VARCHAR(255)          NULL,

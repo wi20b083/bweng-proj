@@ -1,22 +1,17 @@
 package com.example.bwengproj.services;
 
+import com.example.bwengproj.dto.BidDto;
+import com.example.bwengproj.model.Auction;
 import com.example.bwengproj.model.Bid;
 
-import javax.validation.Valid;
+import java.util.List;
 
 public interface BidService {
-    // save operation
-    Bid saveBid(@Valid Bid bid);
-
-    // read operation
-    Iterable<Bid> fetchBidList();
-
-    // update operation
-    Bid updateBid(@Valid Bid bid, Long bidId);
-
-    // delete operation
-    void deleteBidById(Long bidId);
-
-    // find by id
-    Bid fetchBidById(Long bidId);
+    Bid save(Bid bid);
+    List<Bid> getAll(Auction auction);
+    Bid get(Long id);
+    Bid update(Long id, BidDto dto);
+    void delete(Long id);
+    void delete(Auction auction);
+    void deleteAll();
 }

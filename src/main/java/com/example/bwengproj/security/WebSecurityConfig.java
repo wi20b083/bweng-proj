@@ -51,7 +51,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf().disable()
                 // dont authenticate this particular requests
                 .authorizeRequests().antMatchers("/login", "/register", "/auctions/all").permitAll()
                 // all other requests need to be authenticated

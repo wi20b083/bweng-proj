@@ -10,6 +10,5 @@ import java.io.Serializable;
 /**
  * A DTO for the {@link AuctionItem} entity
  */
-public record AuctionItemDto(Auction auction, Product product, @Positive Integer amount, @Positive Integer costPerUnit,
-                             @Positive Integer total) implements Serializable {
+public record AuctionItemDto(Long productId, @Positive Integer amount, @Positive Integer costPerUnit) implements Serializable {
 }

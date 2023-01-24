@@ -1,6 +1,6 @@
 package com.example.bwengproj.security;
 
-import com.example.bwengproj.services.JwtUserDetailsService;
+import com.example.bwengproj.services.UserDetailsServiceImplementation;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +20,7 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtUserDetailsService jwtUserDetailsService;
+    private UserDetailsServiceImplementation jwtUserDetailsService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -55,8 +55,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             // if token is valid configure Spring Security to manually set
             // authentication
-            if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
-
+            if (jwtTokenUtil.validateToken(jwtToken, userDetails, request)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken

@@ -1,6 +1,9 @@
 package com.example.bwengproj.controllers;
 
+import com.example.bwengproj.dto.PasswordDto;
+import com.example.bwengproj.dto.UserDto;
 import com.example.bwengproj.model.User;
+import com.example.bwengproj.model.status.Role;
 import com.example.bwengproj.security.JwtTokenUtil;
 import com.example.bwengproj.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,12 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
-import static com.example.bwengproj.util.Util.toJson;
-import static com.example.bwengproj.util.Util.toPojo;
+import java.util.List;
+
+import static com.example.bwengproj.util.Util.*;
 
 @RestController
-@RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -23,45 +25,97 @@ public class UserController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    @GetMapping("/{username}")
+
+    /**
+     * Gets all {@link User} entities from the Database.
+     * Only accessible for Users with {@link Role} "ROLE_ADMIN".
+     * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the found {@link User} entities attached.
+     */
+    @GetMapping("/users")
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
+    public ResponseEntity<?> getAll() throws JsonProcessingException {
+        List<User> users = userService.getAll();
+        return response(users);
+    }
+
+    /**
+     * Gets a {@link User} entity from the Database.
+     * Authorization required.
+     * @param id The requested {@link User}'s ID.
+     * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the found {@link User} entity attached.
+     */
     @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
-    public ResponseEntity<?> getUserByUsername(@PathVariable String username, @RequestHeader(name = "Authorization") String token) throws IllegalAccessException, JsonProcessingException {
-        if (unameMatchesUser(username, token)) {
-            return ResponseEntity.ok(toJson(userService.fetchUserByUsername(username)));
+    @GetMapping("/users/{id}")
+    public ResponseEntity<?> get(@PathVariable Long id, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
+        if(tokenMatchesRequest(id, token)) {
+            User user = userService.get(id);
+            return response(user);
         } else {
-            throw new IllegalAccessException("You cannot request data of another user.");
+            throw new IllegalAccessException("You cannot request another user's data.");
         }
     }
 
-    @PutMapping(value = "/{id}")
+    /**
+     * Updates a {@link User} entity from the Database.
+     * Authorization required.
+     * @param id The {@link User}'s ID.
+     * @param json JSON String with {@link UserDto} fields. Field "password" is ignored.
+     * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the updated {@link User} entity attached.
+     *
+     */
     @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody String json, @RequestHeader(name = "Authorization") String token) throws JsonProcessingException, IllegalAccessException {
-        if (idMatchesUser(id, token)) {
-            User u = toPojo(json, User.class);
-            return ResponseEntity.ok(userService.updateUser(id, u));
+    @PutMapping("/users/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody String json, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
+        if(tokenMatchesRequest(id, token)) {
+            UserDto dto = objectMapper.readValue(json, UserDto.class);
+            User user = userService.update(id, dto);
+            return response(user);
         } else {
-            throw new IllegalAccessException("You cannot modify data of another user.");
+            throw new IllegalAccessException("You cannot update another user's data.");
         }
     }
 
-    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id, @RequestHeader(name = "Authorization") String token) throws IllegalAccessException {
-        if (idMatchesUser(id, token)) {
-            userService.deleteUserById(id);
-            return new ResponseEntity<>("User deleted.", HttpStatus.OK);
+    @PutMapping("/reset-password/{id}")
+    public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestBody String json, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
+        if(tokenMatchesRequest(id, token)) {
+            PasswordDto dto = objectMapper.readValue(json, PasswordDto.class);
+            userService.updatePassword(id, dto);
+            return response(null);
+        } else {
+            throw new IllegalAccessException("You cannot reset another user's password.");
+        }
+    }
+
+    /**
+     * Deletes a {@link User} entity from the Database.
+     * Authorization required.
+     * @param id The {@link User}'s ID.
+     * @return {@link ResponseEntity} with {@link HttpStatus} 200.
+     */
+    @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
+        if(tokenMatchesRequest(id, token)) {
+            userService.delete(id);
+            return response(null);
         } else {
             throw new IllegalAccessException("You cannot delete another user.");
         }
     }
 
-    private boolean idMatchesUser(Long id, String token) {
-        token = token.substring(7);
-        return Objects.equals(userService.fetchUserByUsername(jwtTokenUtil.getUsernameFromToken(token)).getId(), id);
+    /**
+     * @param o The {@link Object} to be attached.
+     * @return A new {@link ResponseEntity} with {@link HttpStatus} 200 and the {@link Object} attached.
+     * @throws JsonProcessingException The {@link Object} could not be written as a JSON String.
+     */
+    private ResponseEntity<?> response(Object o) throws JsonProcessingException {
+        return new ResponseEntity<>(objectMapper.writeValueAsString(o), HttpStatus.OK);
     }
 
-    private boolean unameMatchesUser(String uname, String token) {
-        token = token.substring(7);
-        return Objects.equals(jwtTokenUtil.getUsernameFromToken(token), uname);
+    private Boolean tokenMatchesRequest(Long id, String token) {
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Long userId = userService.get(username).getId();
+        return userId.longValue() == id.longValue();
     }
 }

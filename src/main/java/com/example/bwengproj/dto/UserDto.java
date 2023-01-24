@@ -10,9 +10,9 @@ import java.io.Serializable;
 import java.util.Set;
 
 /**
- * A DTO for the {@link User} entity
+ * A DTO for the {@link User} entity for updating a {@link User}
  */
 public record UserDto(@NotBlank String firstname, @NotBlank String lastname, @NotBlank @Email String email,
-                      @NotBlank String username, @NotBlank String password, Set<Role> roles, UserStatus status,
+                      @NotBlank String username, String password,
                       @NotBlank String imagePath) implements Serializable {
 }

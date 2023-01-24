@@ -1,10 +1,11 @@
 package com.example.bwengproj.controllers;
 
-import com.example.bwengproj.model.JwtRequest;
-import com.example.bwengproj.model.JwtResponse;
+import com.example.bwengproj.dto.AuthenticationDto;
+import com.example.bwengproj.dto.UserDto;
 import com.example.bwengproj.model.User;
+import com.example.bwengproj.model.status.UserStatus;
 import com.example.bwengproj.security.JwtTokenUtil;
-import com.example.bwengproj.services.JwtUserDetailsService;
+import com.example.bwengproj.services.UserDetailsServiceImplementation;
 import com.example.bwengproj.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +16,11 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static com.example.bwengproj.util.Util.toJson;
-import static com.example.bwengproj.util.Util.toPojo;
+import javax.servlet.http.HttpServletRequest;
+
+import static com.example.bwengproj.util.Util.objectMapper;
 
 @RestController
 @CrossOrigin
@@ -35,38 +33,54 @@ public class JwtAuthenticationController {
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private JwtUserDetailsService userDetailsService;
+    private UserDetailsServiceImplementation userDetailsService;
 
     @Autowired
     private UserService userService;
 
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
+    /**
+     * Reads a {@link User}'s credentials and creates a JWT token.
+     * @param json JSON String with {@link AuthenticationDto} fields.
+     * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the created JWT attached.
+     */
     @PostMapping("/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody String json) throws Exception {
-        JwtRequest authenticationRequest = toPojo(json, JwtRequest.class);
-        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody String json, HttpServletRequest request) throws Exception {
+        AuthenticationDto dto = objectMapper.readValue(json, AuthenticationDto.class);
+        authenticate(dto.username(), dto.password());
 
         final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(authenticationRequest.getUsername());
+                .loadUserByUsername(dto.username());
 
-        final String token = jwtTokenUtil.generateToken(userDetails);
+        final String token = objectMapper.writeValueAsString(jwtTokenUtil.generateToken(userDetails, request));
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
+    /**
+     * Saves a new {@link User} entity in the Database.
+     * No authorization required.
+     * @param json JSON String with {@link UserDto} fields. Field "password" must not be blank.
+     * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the created {@link User} entity attached.
+     * @throws JsonProcessingException JSON String does not match {@link UserDto} fields
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody String json) throws JsonProcessingException {
-        User newUser = toPojo(json, User.class);
-        newUser.setPassword(encoder.encode(newUser.getPassword()));
-        return new ResponseEntity<>(toJson(userService.saveUser(newUser)), HttpStatus.ACCEPTED);
+        UserDto dto = objectMapper.readValue(json, UserDto.class);
+        User user = userService.create(dto);
+        return ResponseEntity.ok(objectMapper.writeValueAsString(user));
     }
 
+    /**
+     * Authenticates a {@link User}.
+     * @param username The {@link User}'s Username.
+     * @param password The {@link User}'s Password.
+     * @throws Exception The {@link User} has the {@link UserStatus} "USER_LOCKED".
+     */
     private void authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
+            throw new Exception("USER_LOCKED", e);
         } catch (BadCredentialsException e) {
             throw new Exception("INVALID_CREDENTIALS", e);
         }

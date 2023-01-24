@@ -11,6 +11,6 @@ import java.time.LocalDateTime;
 /**
  * A DTO for the {@link Bid} entity
  */
-public record BidDto(User user, LocalDateTime deliveryDateTime, BidStatus status,
+public record BidDto(User user, LocalDateTime deliveryDateTime,
                      Auction auction) implements Serializable {
 }
