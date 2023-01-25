@@ -2,6 +2,7 @@ package com.example.bwengproj.model;
 
 import com.example.bwengproj.model.status.Role;
 import com.example.bwengproj.model.status.UserStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +24,33 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Auction> auctions = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Bid> bids = new HashSet<>();
+    @NotBlank
+    @Column(name = "first_name")
+    private String firstname;
+    @NotBlank
+    @Column(name = "last_name")
+    private String lastname;
+    @NotBlank
+    @Email
+    @Column(name = "email")
+    private String email;
+    @NotBlank
+    @Column(name = "user_name")
+    private String username;
+    @NotBlank
+    @Column(name = "password")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    private Set<Role> roles = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private UserStatus status;
+    @NotBlank
+    @Column(name = "image_path")
+    private String imagePath;
 
     public void addAuction(Auction auction) {
         auctions.add(auction);
@@ -34,9 +62,6 @@ public class User {
         auction.setUser(null);
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Bid> bids = new HashSet<>();
-
     public void addBid(Bid bid) {
         bids.add(bid);
         bid.setUser(this);
@@ -47,30 +72,6 @@ public class User {
         bid.setUser(null);
     }
 
-    @NotBlank
-    @Column(name = "first_name")
-    private String firstname;
-
-    @NotBlank
-    @Column(name = "last_name")
-    private String lastname;
-
-    @NotBlank
-    @Email
-    @Column(name = "email")
-    private String email;
-
-    @NotBlank
-    @Column(name = "user_name")
-    private String username;
-
-    @NotBlank
-    @Column(name = "password")
-    private String password;
-
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    private Set<Role> roles = new HashSet<>();
-
     public void addRole(Role role) {
         roles.add(role);
     }
@@ -78,12 +79,4 @@ public class User {
     public void removeRole(Role role) {
         roles.remove(role);
     }
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private UserStatus status;
-
-    @NotBlank
-    @Column(name = "imagePath")
-    private String imagePath;
 }

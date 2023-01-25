@@ -38,7 +38,7 @@ public class BidServiceImplementation implements BidService {
     public Bid create(BidDto dto) {
         Bid db = new Bid();
         Optional<User> u = userRepository.findById(dto.userId());
-        if(u.isPresent()) {
+        if (u.isPresent()) {
             User user = u.get();
             db.setUser(user);
             db.setDeliveryDateTime(dto.deliveryDateTime());
@@ -52,7 +52,7 @@ public class BidServiceImplementation implements BidService {
     @Override
     public List<Bid> getAll(Long auctionId) {
         Optional<Auction> o = auctionRepository.findById(auctionId);
-        if(o.isEmpty()) throw new EntityNotFoundException("No auction found with ID " + auctionId);
+        if (o.isEmpty()) throw new EntityNotFoundException("No auction found with ID " + auctionId);
         Auction a = o.get();
         return bidRepository.getBidByAuction(a);
     }
@@ -60,7 +60,7 @@ public class BidServiceImplementation implements BidService {
     @Override
     public Bid get(Long id) {
         Optional<Bid> b = bidRepository.findById(id);
-        if(b.isPresent()) {
+        if (b.isPresent()) {
             return b.get();
         } else {
             throw new EntityNotFoundException("No bid found with ID " + id);
@@ -74,6 +74,7 @@ public class BidServiceImplementation implements BidService {
         return bidRepository.save(db);
     }
 
+    //TODO: delete bids from User.getBids()
     @Override
     public void delete(Long id) {
         bidRepository.deleteById(id);
@@ -94,7 +95,7 @@ public class BidServiceImplementation implements BidService {
         Bid b = get(bidId);
         Product p;
         Optional<Product> o = productRepository.findById(dto.productId());
-        if(o.isPresent()) {
+        if (o.isPresent()) {
             p = o.get();
         } else {
             throw new EntityNotFoundException("Could not find product with ID " + dto.productId());
@@ -105,7 +106,8 @@ public class BidServiceImplementation implements BidService {
         item.setAmount(dto.amount());
         item.setCostPerUnit(dto.costPerUnit());
         b.addItem(item);
-        return save(b);    }
+        return save(b);
+    }
 
     @Override
     public void changeStatus(Long id, BidStatus status) {

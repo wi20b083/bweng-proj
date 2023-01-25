@@ -10,13 +10,22 @@ import java.util.List;
 
 public interface BidService {
     Bid save(Bid bid);
+
     Bid create(BidDto dto);
+
     List<Bid> getAll(Long auctionId);
+
     Bid get(Long id);
+
     Bid update(Long id, BidDto dto);
+
     void delete(Long id);
+
     void delete(Auction auction);
+
     void deleteAll();
+
     Bid add(Long bidId, BidItemDto dto);
+
     void changeStatus(Long id, BidStatus status);
 }

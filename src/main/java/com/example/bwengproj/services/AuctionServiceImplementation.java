@@ -38,7 +38,7 @@ public class AuctionServiceImplementation implements AuctionService {
     public Auction create(AuctionDto dto) {
         Auction db = new Auction();
         Optional<User> u = userRepository.findById(dto.userId());
-        if(u.isPresent()) {
+        if (u.isPresent()) {
             User user = u.get();
             db.setUser(user);
             db.setStartDateTime(dto.startDateTime());
@@ -64,7 +64,7 @@ public class AuctionServiceImplementation implements AuctionService {
     @Override
     public Auction get(Long id) {
         Optional<Auction> a = auctionRepository.findById(id);
-        if(a.isPresent()) {
+        if (a.isPresent()) {
             return a.get();
         } else {
             throw new EntityNotFoundException("No auction found with ID " + id);
@@ -80,6 +80,7 @@ public class AuctionServiceImplementation implements AuctionService {
         return auctionRepository.save(db);
     }
 
+    //TODO: delete auctions from User.getAuctions()
     @Override
     public void delete(Long id) {
         auctionRepository.deleteById(id);
@@ -95,7 +96,7 @@ public class AuctionServiceImplementation implements AuctionService {
         Auction a = get(auctionId);
         Product p;
         Optional<Product> o = productRepository.findById(dto.productId());
-        if(o.isPresent()) {
+        if (o.isPresent()) {
             p = o.get();
         } else {
             throw new EntityNotFoundException("Could not find product with ID " + dto.productId());

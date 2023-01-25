@@ -2,6 +2,7 @@ package com.example.bwengproj.controllers;
 
 import com.example.bwengproj.dto.PasswordDto;
 import com.example.bwengproj.dto.UserDto;
+import com.example.bwengproj.model.Bid;
 import com.example.bwengproj.model.User;
 import com.example.bwengproj.model.status.Role;
 import com.example.bwengproj.security.JwtTokenUtil;
@@ -27,9 +28,11 @@ public class UserController {
 
 
     /**
-     * Gets all {@link User} entities from the Database.
-     * Only accessible for Users with {@link Role} "ROLE_ADMIN".
-     * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the found {@link User} entities attached.
+     * Gets all {@link User} entities from the Database,
+     * Authentication: authenticated,
+     * Authorization: {@link Role} "ROLE_ADMIN"
+     *
+     * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the found {@link User} entities attached
      */
     @GetMapping("/users")
     @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
@@ -39,46 +42,65 @@ public class UserController {
     }
 
     /**
-     * Gets a {@link User} entity from the Database.
-     * Authorization required.
-     * @param id The requested {@link User}'s ID.
+     * Gets a {@link User} entity from the Database,
+     * Authentication: authenticated,
+     * Authorization: all
+     *
+     * @param id    The requested {@link User}'s ID.
+     * @param token JWT
      * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the found {@link User} entity attached.
+     * @throws IllegalAccessException The requesting {@link User} tried to get data that belongs to another {@link User}
      */
-    @PreAuthorize("hasAnyRole(T(com.example.bwengproj.model.status.Role).ROLE_USER, T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
     @GetMapping("/users/{id}")
     public ResponseEntity<?> get(@PathVariable Long id, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
         List<Role> roles = jwtTokenUtil.getRolesFromToken(token);
 
-        if (!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(id, token)) throw new IllegalAccessException("You cannot request another user's data.");
+        if (!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(id, token, jwtTokenUtil, userService))
+            throw new IllegalAccessException("You cannot request another user's data.");
 
         User user = userService.get(id);
         return response(user);
     }
 
     /**
-     * Updates a {@link User} entity from the Database.
-     * Authorization required.
-     * @param id The {@link User}'s ID.
-     * @param json JSON String with {@link UserDto} fields. Field "password" is ignored.
-     * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the updated {@link User} entity attached.
+     * Updates a {@link User} entity from the Database,
+     * Authentication: authenticated,
+     * Authorization: all
      *
+     * @param id    The {@link User}'s ID
+     * @param json  JSON String with {@link UserDto} fields. Field "password" is ignored
+     * @param token JWT
+     * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the updated {@link User} entity attached
+     * @throws IllegalAccessException The requesting {@link User} tried to update data from to another {@link User}
      */
-    @PreAuthorize("hasAnyRole(T(com.example.bwengproj.model.status.Role).ROLE_USER, T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
     @PutMapping("/users/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody String json, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
         List<Role> roles = jwtTokenUtil.getRolesFromToken(token);
 
-        if (!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(id, token)) throw new IllegalAccessException("You cannot request another user's data.");
+        if (!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(id, token, jwtTokenUtil, userService))
+            throw new IllegalAccessException("You cannot update another user's data.");
 
         UserDto dto = objectMapper.readValue(json, UserDto.class);
         User user = userService.update(id, dto);
         return response(user);
     }
 
+    /**
+     * Updates a {@link User} entity from the Database,
+     * Authentication: authenticated,
+     * Authorization: {@link Role} "ROLE_USER"
+     *
+     * @param id    The {@link User}'s ID
+     * @param json  JSON String with {@link PasswordDto} fields
+     * @param token JWT
+     * @return {@link ResponseEntity} with {@link HttpStatus} 200
+     * @throws IllegalAccessException The requesting {@link User} tried to reset the password of another {@link User}
+     */
     @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_USER)")
     @PutMapping("/reset-password/{id}")
     public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestBody String json, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
-        if(!tokenMatchesRequest(id, token)) throw new IllegalAccessException("You cannot reset another user's password.");
+        if (!tokenMatchesRequest(id, token, jwtTokenUtil, userService))
+            throw new IllegalAccessException("You cannot reset another user's password.");
 
         PasswordDto dto = objectMapper.readValue(json, PasswordDto.class);
         userService.updatePassword(id, dto);
@@ -86,41 +108,38 @@ public class UserController {
     }
 
     /**
-     * Deletes a {@link User} entity from the Database.
-     * Authorization required.
-     * @param id The {@link User}'s ID.
-     * @return {@link ResponseEntity} with {@link HttpStatus} 200.
+     * Deletes a {@link User} entity from the Database,
+     * Authentication: authenticated,
+     * Authorization: all
+     *
+     * @param id The {@link User}'s ID
+     * @return {@link ResponseEntity} with {@link HttpStatus} 200
+     * @throws IllegalAccessException The requesting {@link User} tried to delete another {@link User}
      */
-    @PreAuthorize("hasAnyRole(T(com.example.bwengproj.model.status.Role).ROLE_USER, T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id, @RequestHeader("Authorization") String token) throws JsonProcessingException, IllegalAccessException {
         List<Role> roles = jwtTokenUtil.getRolesFromToken(token);
 
-        if (!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(id, token)) throw new IllegalAccessException("You cannot request another user's data.");
+        if (!roles.contains(Role.ROLE_ADMIN) && !tokenMatchesRequest(id, token, jwtTokenUtil, userService))
+            throw new IllegalAccessException("You cannot delete another user.");
 
         userService.delete(id);
         return response(null);
     }
 
+    /**
+     * Changes the status of an {@link Bid} entity from the Database,
+     * Authentication: authenticated,
+     * Authorization: {@link Role} "ROLE_ADMIN"
+     *
+     * @param id     ID of the {@link User} to change the status of
+     * @param status Status to set
+     * @return {@link ResponseEntity} with {@link HttpStatus} 200
+     */
     @PreAuthorize("hasRole(T(com.example.bwengproj.model.status.Role).ROLE_ADMIN)")
     @PutMapping("/{id}")
     public ResponseEntity<?> changeStatus(@PathVariable Long id, @RequestParam Boolean status) throws JsonProcessingException {
         userService.changeStatus(id, status);
         return response(null);
-    }
-
-    /**
-     * @param o The {@link Object} to be attached.
-     * @return A new {@link ResponseEntity} with {@link HttpStatus} 200 and the {@link Object} attached.
-     * @throws JsonProcessingException The {@link Object} could not be written as a JSON String.
-     */
-    private ResponseEntity<?> response(Object o) throws JsonProcessingException {
-        return new ResponseEntity<>(objectMapper.writeValueAsString(o), HttpStatus.OK);
-    }
-
-    private Boolean tokenMatchesRequest(Long id, String token) {
-        String username = jwtTokenUtil.getUsernameFromToken(token);
-        Long userId = userService.get(username).getId();
-        return userId.longValue() == id.longValue();
     }
 }

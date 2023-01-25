@@ -16,11 +16,15 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
 import static com.example.bwengproj.util.Util.objectMapper;
+import static com.example.bwengproj.util.Util.response;
 
 @RestController
 @CrossOrigin
@@ -39,7 +43,10 @@ public class JwtAuthenticationController {
     private UserService userService;
 
     /**
-     * Reads a {@link User}'s credentials and creates a JWT token.
+     * Reads a {@link User}'s credentials and creates a JWT token,
+     * Authentication: none,
+     * Authorization: all
+     *
      * @param json JSON String with {@link AuthenticationDto} fields.
      * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the created JWT attached.
      */
@@ -53,28 +60,31 @@ public class JwtAuthenticationController {
 
         final String token = objectMapper.writeValueAsString(jwtTokenUtil.generateToken(userDetails, request));
 
-        return new ResponseEntity<>(token, HttpStatus.OK);
+        return response(token);
     }
 
     /**
-     * Saves a new {@link User} entity in the Database.
-     * No authorization required.
-     * @param json JSON String with {@link UserDto} fields. Field "password" must not be blank.
-     * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the created {@link User} entity attached.
+     * Saves a new {@link User} entity in the Database,
+     * Authentication: none,
+     * Authorization: all
+     *
+     * @param json JSON String with {@link UserDto} fields. Field "password" must not be blank
+     * @return {@link ResponseEntity} with {@link HttpStatus} 200 and the created {@link User} entity attached
      * @throws JsonProcessingException JSON String does not match {@link UserDto} fields
      */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody String json) throws JsonProcessingException {
         UserDto dto = objectMapper.readValue(json, UserDto.class);
         User user = userService.create(dto);
-        return ResponseEntity.ok(objectMapper.writeValueAsString(user));
+        return response(user);
     }
 
     /**
-     * Authenticates a {@link User}.
-     * @param username The {@link User}'s Username.
-     * @param password The {@link User}'s Password.
-     * @throws Exception The {@link User} has the {@link UserStatus} "USER_LOCKED".
+     * Authenticates a {@link User}
+     *
+     * @param username The {@link User}'s username
+     * @param password The {@link User}'s password
+     * @throws Exception The {@link User} has the {@link UserStatus} "USER_LOCKED" or the {@link User}'s credentials are wrong
      */
     private void authenticate(String username, String password) throws Exception {
         try {

@@ -2,10 +2,8 @@ package com.example.bwengproj.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +36,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(JsonProcessingException.class)
     protected ResponseEntity<Object> handleJsonProcessingException(
-            JsonProcessingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+            JsonProcessingException ex) {
         String error = "Error processing JSON";
         return buildResponseEntity(new APIError(HttpStatus.BAD_REQUEST, error, ex));
     }
@@ -47,17 +45,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleIllegalAccess(
             IllegalAccessException ex) {
         APIError apiError = new APIError(HttpStatus.FORBIDDEN);
-        apiError.setMessage("Access denied.");
+        apiError.setMessage("Access denied");
         apiError.setDebugMessage(ex.getMessage());
         return buildResponseEntity(apiError);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     protected ResponseEntity<Object> handleIllegalArgument(
-            IllegalArgumentException ex, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
+            IllegalArgumentException ex) {
         APIError apiError = new APIError(HttpStatus.BAD_REQUEST);
-        apiError.setMessage("Illegal Argument.");
+        apiError.setMessage("Illegal Argument");
         apiError.setDebugMessage(ex.getMessage());
         return buildResponseEntity(apiError);
     }
@@ -127,7 +124,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<Object> handleGenericException(Exception ex, WebRequest request) {
+    protected ResponseEntity<Object> handleGenericException(Exception ex) {
         APIError apiError = new APIError(HttpStatus.BAD_REQUEST);
         apiError.setMessage("An error occurred.");
         apiError.setDebugMessage(ex.getMessage());
@@ -135,8 +132,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    protected ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
-                                                                      WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
         APIError apiError = new APIError(HttpStatus.BAD_REQUEST);
         apiError.setMessage(String.format("The parameter '%s' of value '%s' could not be converted to type '%s'", ex.getName(), ex.getValue(), Objects.requireNonNull(ex.getRequiredType()).getSimpleName()));
         apiError.setDebugMessage(ex.getMessage());

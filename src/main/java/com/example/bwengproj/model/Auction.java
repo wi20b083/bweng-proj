@@ -1,6 +1,7 @@
 package com.example.bwengproj.model;
 
 import com.example.bwengproj.model.status.AuctionStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,12 +23,15 @@ public class Auction {
     private User user;
 
     @Column(name = "start_date_time", columnDefinition = "TIMESTAMP")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime startDateTime;
 
     @Column(name = "delivery_date_time", columnDefinition = "TIMESTAMP")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime deliveryDateTime;
 
     @Column(name = "end_date_time", columnDefinition = "TIMESTAMP")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime endDateTime;
 
     @Enumerated(EnumType.STRING)
@@ -35,6 +39,8 @@ public class Auction {
 
     @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AuctionItem> items;
+    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Bid> bids;
 
     public void addItem(AuctionItem item) {
         items.add(item);
@@ -45,9 +51,6 @@ public class Auction {
         items.remove(item);
         item.setAuction(null);
     }
-
-    @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Bid> bids;
 
     public void addBid(Bid bid) {
         bids.add(bid);
@@ -64,7 +67,7 @@ public class Auction {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if(!(o instanceof Auction)) return false;
+        if (!(o instanceof Auction)) return false;
         return id != null && id.equals(((Auction) o).getId());
     }
 

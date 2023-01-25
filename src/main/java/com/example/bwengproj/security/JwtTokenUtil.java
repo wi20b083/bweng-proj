@@ -25,11 +25,29 @@ public class JwtTokenUtil implements Serializable {
     @Value("${jwt.secret}")
     private String secret;
 
+    private static String getClientIp(HttpServletRequest request) {
+        String remoteAddr = "";
+        if (request != null) {
+            remoteAddr = request.getHeader("X-FORWARDED-FOR");
+            if (remoteAddr == null || "".equals(remoteAddr)) {
+                remoteAddr = request.getRemoteAddr();
+            }
+        }
+        return remoteAddr;
+    }
+
+    public static String getUserAgent(HttpServletRequest request) {
+        String ua = "";
+        if (request != null) {
+            ua = request.getHeader("User-Agent");
+        }
+        return ua;
+    }
+
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
-
 
     //retrieve expiration date from jwt token
     public Date getExpirationDateFromToken(String token) {
@@ -85,23 +103,5 @@ public class JwtTokenUtil implements Serializable {
         final String ipAddress = getIpAddressFromToken(token);
         final String userAgent = getUserAgentFromToken(token);
         return (userAgent.equals(getUserAgent(request)) && ipAddress.equals(getClientIp(request)) && username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-    private static String getClientIp(HttpServletRequest request) {
-        String remoteAddr = "";
-        if (request != null) {
-            remoteAddr = request.getHeader("X-FORWARDED-FOR");
-            if (remoteAddr == null || "".equals(remoteAddr)) {
-                remoteAddr = request.getRemoteAddr();
-            }
-        }
-        return remoteAddr;
-    }
-
-    public static String getUserAgent(HttpServletRequest request) {
-        String ua = "";
-        if (request != null) {
-            ua = request.getHeader("User-Agent");
-        }
-        return ua;
     }
 }

@@ -25,6 +25,8 @@ public class Product {
     private String description;
 
     @NotBlank
-    @Column(name = "imagePath")
+    @Column(name = "image_path")
     private String imagePath;
+
+    //TODO: private Set<String> category;
 }

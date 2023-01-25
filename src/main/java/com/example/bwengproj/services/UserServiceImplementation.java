@@ -16,10 +16,9 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImplementation implements UserService {
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     @Autowired
     private UserRepository userRepository;
-
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Override
     public List<User> getAll() {
@@ -29,7 +28,7 @@ public class UserServiceImplementation implements UserService {
     @Override
     public User get(Long id) {
         Optional<User> u = userRepository.findById(id);
-        if(u.isPresent()) {
+        if (u.isPresent()) {
             return u.get();
         } else {
             throw new EntityNotFoundException("No user found with ID " + id);
@@ -39,7 +38,7 @@ public class UserServiceImplementation implements UserService {
     @Override
     public User get(String username) {
         Optional<User> u = userRepository.findUserByUsername(username);
-        if(u.isPresent()) {
+        if (u.isPresent()) {
             return u.get();
         } else {
             throw new EntityNotFoundException("No user found with username " + username);
@@ -48,13 +47,13 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public User update(Long id, UserDto dto) {
-            User db = get(id);
-            db.setFirstname(dto.firstname());
-            db.setLastname(dto.lastname());
-            db.setUsername(dto.username());
-            db.setEmail(dto.email());
-            db.setImagePath(dto.imagePath());
-            return userRepository.save(db);
+        User db = get(id);
+        db.setFirstname(dto.firstname());
+        db.setLastname(dto.lastname());
+        db.setUsername(dto.username());
+        db.setEmail(dto.email());
+        db.setImagePath(dto.imagePath());
+        return userRepository.save(db);
     }
 
     @Override
@@ -68,7 +67,7 @@ public class UserServiceImplementation implements UserService {
     public void updatePassword(Long id, PasswordDto dto) {
         User db = get(id);
         String oldPasswordEncrypted = encoder.encode(dto.oldPassword());
-        if(oldPasswordEncrypted.equals(db.getPassword())) {
+        if (oldPasswordEncrypted.equals(db.getPassword())) {
             String newPasswordEncrypted = encoder.encode(dto.newPassword());
             db.setPassword(newPasswordEncrypted);
             userRepository.save(db);
@@ -98,7 +97,7 @@ public class UserServiceImplementation implements UserService {
         db.setUsername(dto.username());
         db.setEmail(dto.email());
         db.setImagePath(dto.imagePath());
-        if(!dto.password().isBlank()) {
+        if (!dto.password().isBlank()) {
             String encryptedPassword = encoder.encode(dto.password());
             db.setPassword(encryptedPassword);
         } else {

@@ -20,7 +20,6 @@ import java.util.Set;
 @JsonTypeIdResolver(LowerCaseClassNameResolver.class)
 public
 class APIError {
-
     private HttpStatus status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime timestamp;

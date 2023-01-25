@@ -2,9 +2,9 @@ CREATE TABLE auction
 (
     id                 BIGINT AUTO_INCREMENT NOT NULL,
     user_id            BIGINT                NULL,
-    start_date_time    TIMESTAMP             NULL,
-    delivery_date_time TIMESTAMP             NULL,
-    end_date_time      TIMESTAMP             NULL,
+    start_date_time    timestamp             NULL,
+    delivery_date_time timestamp             NULL,
+    end_date_time      timestamp             NULL,
     status             VARCHAR(255)          NULL,
     CONSTRAINT pk_auction PRIMARY KEY (id)
 );
@@ -24,7 +24,7 @@ CREATE TABLE bid
 (
     id                 BIGINT AUTO_INCREMENT NOT NULL,
     user_id            BIGINT                NULL,
-    delivery_date_time TIMESTAMP             NULL,
+    delivery_date_time timestamp             NULL,
     status             VARCHAR(255)          NULL,
     auction_id         BIGINT                NULL,
     CONSTRAINT pk_bid PRIMARY KEY (id)
@@ -45,7 +45,7 @@ CREATE TABLE product
 (
     id            BIGINT AUTO_INCREMENT NOT NULL,
     name          VARCHAR(255)          NULL,
-    description VARCHAR(255)            NULL,
+    description   VARCHAR(255)          NULL,
     image_path    VARCHAR(255)          NULL,
     CONSTRAINT pk_product PRIMARY KEY (id)
 );
@@ -53,7 +53,6 @@ CREATE TABLE product
 CREATE TABLE user
 (
     id         BIGINT AUTO_INCREMENT NOT NULL,
-    token      VARCHAR(255)          NULL,
     first_name VARCHAR(255)          NULL,
     last_name  VARCHAR(255)          NULL,
     email      VARCHAR(255)          NULL,
